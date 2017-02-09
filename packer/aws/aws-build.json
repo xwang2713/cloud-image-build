@@ -1,0 +1,46 @@
+{
+	"min_packer_version": "0.12.0",
+	"variables": {
+		"aws_access_key": "{{env `ACCESS_KEY`}}",
+		"aws_secret_key": "{{env `SECRET_KEY`}}",
+		"aws_region": "us-east-2"
+
+  },
+  "builders": [{
+    "type": "amazon-ebs",
+    "access_key": "{{user `aws_access_key`}}",
+    "secret_key": "{{user `aws_secret_key`}}",
+    "region": "{{user `aws_region`}}",
+    "source_ami_filter": {
+	"filters": {
+		"owner-alias": "aws-marketplace",
+		"product-code": "aw0evgkw8e5c1q413zgy5pjce",
+		"virtualization-type": "hvm"
+	},
+	"most_recent": true
+    },
+    "instance_type": "t2.micro",
+    "ssh_username": "centos",
+    "ami_name": "centos with HPCC 6.2.4-1 {{timestamp}}",
+    "ssh_pty" : "true",
+    "ami_block_device_mappings": [{
+	"device_name": "/dev/sda1",
+	"volume_type": "gp2",
+	"volume_size": 10,
+	"encrypted": "true",
+	"delete_on_termination": true
+    }],
+    "tags": {
+	    "OS_Version": "CentOS",
+	    "Release": "7"
+	}
+  }],
+  "provisioners": [{
+  	"type": "file",
+	"source": "/home/centos/Downloads/hpccsystems-platform-community_6.2.4-1.el7.x86_64.rpm",
+	"destination": "/tmp/hpccsystems-platform-community_6.2.4-1.el7.x86_64.rpm"
+ },{
+        "type": "shell",
+        "script": "./user.sh"
+ }]
+}
