@@ -1,0 +1,18 @@
+# AWS Community AMIs
+# ubuntu/images/hvm-ssd/ubuntu-trusty-14.04-amd64-server
+
+us-east-1 ami-456b493a  N.Virginia
+us-east-2 ami-7d132e18  Ohio
+us-west-1 ami-d58868b6  N.California
+us-west-2 ami-a3ebbfdb  Oregon
+ap-south-1 ami-7c8ead13 Mumbai
+ap-northeast-1 ami-98cfaa75 Tokyo
+ap-northeast-2 ami-5b13ba35 Seoul
+ap-southeast-1 ami-1c106cf6 Singapore
+ap-southeast-2 ami-f75a8195 Sydney
+ca-central-1 ami-c29515a6  Central
+eu-central-1 ami-05d9e2ee Frankfurt
+eu-west-1 ami-06e2f6ec Ireland
+eu-west-2 ami-6a4aa80d London
+eu-west-3 ami-48813035 Paris
+sa-east-1 ami-dff5d1b3 Sao-Paulo
