@@ -9,7 +9,9 @@
     "aws_region": "@AWS_REGION@",
     "account_id": "{{env `EC2_ACCOUNT_ID`}}",
     "x509_key_path": "{{env `EC2_PRIVATE_KEY`}}",
-    "x509_cert_path": "{{env `EC2_CERT`}}"
+    "x509_cert_path": "{{env `EC2_CERT`}}",
+    "ssh_keypair_name": "{{env `SSH_KEYPAIR_NAME`}}",
+    "ssh_private_key_file": "{{env `SSH_PRIVATE_KEY_FILE`}}"
   },
   "builders": [{
     "type": "@BUILD_TYPE@",
@@ -17,18 +19,19 @@
     "access_key": "{{user `aws_access_key`}}",
     "secret_key": "{{user `aws_secret_key`}}",
     "region": "{{user `aws_region`}}",
-    "source_ami": "ami-05d9e2ee",
+    "source_ami": "@BASE_AMI@",
     "account_id": "{{user `account_id`}}",
     "instance_type": "t2.micro",
     "s3_bucket": "hpccsystems-amis-{{user `aws_region`}}",
     "bundle_prefix": "hpccsystems-community-{{user `hpcc_version`}}{{user `codename`}}-{{isotime \"20060102-030405\"}}",
     "ssh_username": "ubuntu",
-    "ssh_keypair_name": "hpcc-build",
-    "ssh_private_key_file": "/home/ming/.ssh/hpcc-build",
+    "ssh_keypair_name": "{{user `ssh_keypair_name`}}",
+    "ssh_private_key_file": "{{user `ssh_private_key_file`}}",
     "ami_name": "hpcc-systems-community-{{user `hpcc_version`}}-{{user `codename`}}-{{user `arch`}}-{{isotime \"20060102-030405\"}}",
     "x509_cert_path": "{{user `x509_cert_path`}}",
     "x509_key_path": "{{user `x509_key_path`}}",
-    "x509_upload_path": "/tmp"
+    "x509_upload_path": "/tmp",
+    "ami_groups" : "all"
   }],
   "provisioners": [{
         "type": "shell",
