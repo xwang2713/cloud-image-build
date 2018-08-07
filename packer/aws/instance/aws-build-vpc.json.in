@@ -25,6 +25,8 @@
     "s3_bucket": "hpccsystems-amis-{{user `aws_region`}}",
     "bundle_prefix": "hpccsystems-community-{{user `hpcc_version`}}{{user `codename`}}-{{isotime \"20060102-030405\"}}",
     "ssh_username": "ubuntu",
+    "subnet_id" : "@SUBNET_ID@",
+    "associate_public_ip_address": "true",
     "ssh_keypair_name": "{{user `ssh_keypair_name`}}",
     "ssh_private_key_file": "{{user `ssh_private_key_file`}}",
     "ami_name": "hpcc-systems-community-{{user `hpcc_version`}}-{{user `codename`}}-{{user `arch`}}-{{isotime \"20060102-030405\"}}",
