@@ -48,13 +48,16 @@ run_packer_build()
   
   if [ "$quiet" = "true" ]
   then
-     packer build -debug ${build_script} > $log 2>&1
+     packer build ${build_script} > $log 2>&1
      rc=$?
   else
      echo ""
      echo "Build for $region with $build_script"
-     #packer build -debug ${build_script} 2>&1 | tee -a $log ; rc=${PIPESTATUS[0]}
-     packer build -on-error=abort -debug ${build_script} 2>&1 | tee -a $log ; rc=${PIPESTATUS[0]}
+     packer build ${build_script} 2>&1 | tee -a $log ; rc=${PIPESTATUS[0]}
+
+     # To debug usig following. When error happens the instance will be kept in AWS EC2 region instances
+     # Use hpcc-build key file ssh to the instance to debug the problem
+     #packer build -on-error=abort -debug ${build_script} 2>&1 | tee -a $log ; rc=${PIPESTATUS[0]}
   fi
 
   if [ ${rc} -eq 0 ] 
