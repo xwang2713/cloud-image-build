@@ -63,7 +63,7 @@ run_packer_build()
   if [ ${rc} -eq 0 ] 
   then
      num_of_success=$(expr $num_of_success \+ 1)
-     cat $log | tail -n 2 | head -n 1 >> $ami-list
+     cat $log | tail -n 2 | head -n 1 >> ${ami_list}
   else
      num_of_failure=$(expr $num_of_failure \+ 1)
      echo "${region} $log" >> $err_file_list
@@ -129,8 +129,8 @@ then
    exit 1
 fi
 
-ami-list="ami-${hpcc_version}"
-[ -e ${ami-list} ] && rm -rf $ami-list
+ami_list="ami-${hpcc_version}"
+[ -e ${ami_list} ] && rm -rf ${ami_list}
 
 if [ -z ${codename} ]
 then
@@ -203,7 +203,7 @@ fi
 if [ ${num_of_success} -gt 0 ]
 then
   echo "Generated AMI list:"
-  cat $ami-list
+  cat ${ami_list}
   echo ""
 fi
 
