@@ -20,18 +20,17 @@ MAJOR_VERSION=${VERSION%%.*}
 #fi
 
 
-ec2-describe-regions | while read x region region2
+aws ec2 describe-regions | while read x region region2
 do
-    
-    bucket=hpccsystems-amis-${region}
+    bucket=hpccsystems-amis-${region2}
     echo 
     echo "Process bucket $bucket ..."
     if [ "$ACTION" = "delete" ]; then
        echo 
-       echo "Delete in region $region ... " 
-       s3cmd del s3://${bucket}/hpccsystems-community-${VERSION}*
+       echo "Delete in region $region2 ... " 
+       aws s3 del s3://${bucket}/hpccsystems-community-${VERSION}*
     fi
-    s3cmd ls s3://${bucket} | while read d t s f 
+    aws s3 ls s3://${bucket} | while read d t s f 
     do
         [ -z "$f" ] && continue
         echo $f |  grep  "hpccsystems-community-${VERSION}"
