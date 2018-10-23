@@ -68,6 +68,7 @@ run_packer_build()
      num_of_failure=$(expr $num_of_failure \+ 1)
      echo "${region} $log" >> $err_file_list
   fi
+
 }
 
 # Variables
@@ -173,13 +174,14 @@ else
      echo "Region file $region_file doesn't exists"
      exti 1
   fi
-  while read line 
+
+  for line in $(cat ${region_file} )
   do 
     line=$(echo $line | sed 's/[[:space:]]//g')
     [[ $line == \#* ]] && continue
     region=$(echo $line | cut -d' ' -f1 )
     run_packer_build 
-  done < ${region_file} 
+  done
 
 fi
 

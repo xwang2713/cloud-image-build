@@ -43,6 +43,7 @@ sudo apt-get install -y --no-install-recommends \
                 libpython3.4          \
                 zip                   \
                 openjdk-7-jdk         \
+                xterm                 \
                 --fix-missing         
 
 

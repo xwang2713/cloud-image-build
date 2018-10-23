@@ -42,6 +42,7 @@ sudo apt-get install -y --no-install-recommends \
                 libpython2.7          \
                 libpython3.5          \
                 openjdk-8-jdk         \
+                xterm                 \
                 --fix-missing         
 
 
