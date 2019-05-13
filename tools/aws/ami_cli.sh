@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Example: ./ami_cli.sh 7.0.0-beta2-trusty delete
+# Example: ./ami_cli.sh 7.0.0 delete
 
 if [ -z "$1" ]; then
    echo "Must supply HPCC version"
@@ -28,8 +28,10 @@ do
         if [ $? -eq 0 ]
         then
             if [ "$ACTION" = "delete" ]; then
-               echo "aws ec2 deregister --region $region2 $id"
-               aws ec2 deregister --region $region2 $id
+               #echo "aws ec2 deregister-image --region $region2 $id"
+               echo "aws --region $region2 ec2 deregister-image --image-id $id"
+               #aws ec2 deregister-image --region $region2 $id
+               aws --region $region2 ec2 deregister-image --image-id $id
             elif [ "$ACTION" = "list" ]; then
                echo "$id  $name"
             fi

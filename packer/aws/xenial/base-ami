@@ -1,0 +1,25 @@
+# How to select base ami: 
+# 1) go to https://cloud-images.ubuntu.com/locator/ec2/
+# 2) select desired region at bottom of the first colume
+# 3) In up right type "xenial" in "search" field 
+# 4) for each hvm:ebs-ssd of "Instance Type" and AKI-ID is hvm click AMI-ID
+# 5) General purpose t2.micro is available this ami is good for base ami
+# Release 20190406 seems all allow t2.micro
+
+us-east-1 ami-028d6461780695a43 N.Virginia
+us-west-1 ami-069339bea0125f50d N.California
+us-west-2 ami-09b42c38b449cfa59 Oregon
+ap-northeast-1 ami-097beac0bacfefe65 Tokyo
+ap-southeast-1 ami-0f9f33c210de47b63 Singapore
+ap-southeast-2 ami-074a2888bf09cab0a Sydney
+eu-central-1 ami-05710338b6a5013d1 Frankfurt
+eu-west-1 ami-0e219142c0bee4a6e Ireland
+
+# Uploading fail:
+us-east-2 ami-0dae3d101cd772fae Ohio
+ap-south-1 ami-0f4ab593bd4e5b352 Mumbai
+ap-northeast-2 ami-04ca5d9535faed24a Seoul
+ca-central-1 ami-040bf52a85a5b3f6c Central
+eu-west-2 ami-09b42c38b449cfa59 London
+eu-west-3 ami-0acfe51b617393c70 Paris
+sa-east-1 ami-058732e2bf6d7acb4 Sao-Paulo

@@ -12,7 +12,7 @@ sudo apt-get install -y ruby
 
 export platformVersion=${HPCC_FULL_VERSION%-*}
 export buildCode=${HPCC_FULL_VERSION#*-}
-export codename=xenial
+export codename=bionic
 export arch=amd64
 export pkgType=deb
 export now=$(date -u +%Y%m%d-%H%M)
@@ -20,8 +20,8 @@ export now=$(date -u +%Y%m%d-%H%M)
 echo "Installing HPCC dependancies"
 sudo apt-get install -y --no-install-recommends \
                 libaprutil1           \
-                libboost-regex1.58.0  \
-                libicu55              \
+                libboost-regex1.65.1  \
+                libicu60              \
                 libldap-2.4-2         \
                 libtbb2               \
                 libnuma1              \
@@ -41,13 +41,12 @@ sudo apt-get install -y --no-install-recommends \
                 libmemcached11        \
                 libmemcachedutil2     \
                 libpython2.7          \
-                libpython3.5          \
-                openjdk-8-jdk         \
+                libpython3.6          \
+                openjdk-11-jdk        \
                 xterm                 \
                 --fix-missing         
 
 
-#git libboost-regex1.54.0 libboost-regex-dev libicu52 libicu-dev libxalan-c111 libxerces-c3.1 binutils libldap-2.4-2 libldap2-dev openssl zlib1g g++ openssh-client openssh-server expect libarchive13 rsync lib32z1-dev tofrodos build-essential libfuse-dev libcurl4-openssl-dev libxml2-dev mime-support subversion autoconf libtool libxslt1.1 libxml2 libapr1 libaprutil1 zip libtbb2 libnuma1
 
 echo "Installing instance cloud pre-requisites"
 sudo apt-get install -y tofrodos build-essential libfuse-dev libxml2-dev libcurl4-openssl-dev mime-support subversion autoconf libtool

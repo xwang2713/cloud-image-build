@@ -71,3 +71,7 @@ Remove AMIs for HPCC version
 ```sh
 ./ami_cli.sh <hpcc version> delete
 ```
+
+
+Known problem:
+Build fail for Ubuntu 18.04. AWS ticket: https://console.aws.amazon.com/support/cases?region=us-east-1#/5997229071/en

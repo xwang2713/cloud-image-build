@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Example: ./s3.sh 7.0.0-beta2trusty delete
+# Example: ./s3.sh 7.0.0 delete
 
 if [ -z "$1" ]; then
    echo "Must supply HPCC version."
@@ -25,14 +25,16 @@ do
     bucket=hpccsystems-amis-${region2}
     echo 
     echo "Process bucket $bucket ..."
-    if [ "$ACTION" = "delete" ]; then
-       echo 
-       echo "Delete in region $region2 ... " 
-       aws s3 del s3://${bucket}/hpccsystems-community-${VERSION}*
-    fi
-    aws s3 ls s3://${bucket} | while read d t s f 
+    echo 
+    aws s3 ls s3://${bucket} | grep "hpccsystems-community-${VERSION}" | while read d t s f 
     do
         [ -z "$f" ] && continue
-        echo $f |  grep  "hpccsystems-community-${VERSION}"
+        if [ "$ACTION" = "delete" ]; then
+          #echo "Delete in region $region2 $f ... " 
+          #aws s3 rm --recursive s3://${bucket}/$f
+          aws s3 rm s3://${bucket}/$f
+        else		 
+           echo "$region2 $f"
+        fi
     done
 done

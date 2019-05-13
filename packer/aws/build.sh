@@ -172,7 +172,7 @@ else
   if [ ! -e ${region_file} ]
   then
      echo "Region file $region_file doesn't exists"
-     exti 1
+     exit 1
   fi
 
   for line in $(cat ${region_file} )
