@@ -14,6 +14,10 @@ ACTION="list"
 
 ACTION=$(echo $ACTION | tr '[:upper:]' '[:lower:]')
 
+ami_prefix=hpcc-systems
+ami_prefix2=${image_prefix}-community
+#ami_prefix2=${image_prefix}-dev
+
 aws ec2 describe-regions | while read x region region2
 do
     
@@ -21,10 +25,10 @@ do
     echo "Process region $region2 ..."
     #ec2-describe-images --region $region2  | while read name id image x
     aws ec2 describe-images --region $region2 --query 'Images[*].{ID:ImageId Name:Name}' \
-        --owners $EC2_ACCOUNT_ID | grep hpcc-systems | while read id name 
+        --owners $EC2_ACCOUNT_ID | grep ${ami_prefix} | while read id name 
     do
         #echo "$id $name"
-        echo $name |  grep -q "hpcc-systems-community-${VERSION}"
+        echo $name |  grep -q "${ami_prefix2}-${VERSION}"
         if [ $? -eq 0 ]
         then
             if [ "$ACTION" = "delete" ]; then

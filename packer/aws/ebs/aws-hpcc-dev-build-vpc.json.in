@@ -1,0 +1,39 @@
+{
+  "min_packer_version": "1.0.0",
+  "variables": {
+    "hpcc_version": "@HPCC_VERSION@",
+    "codename": "@CODENAME@",     
+    "arch": "@ARCH@",     
+    "aws_access_key": "{{env `ACCESS_KEY`}}",
+    "aws_secret_key": "{{env `SECRET_KEY`}}",
+    "aws_region": "@AWS_REGION@",
+    "ssh_keypair_name": "{{env `SSH_KEYPAIR_NAME`}}",
+    "ssh_private_key_file": "{{env `SSH_PRIVATE_KEY_FILE`}}"
+  },
+  "builders": [{
+    "type": "@BUILD_TYPE@",
+    "ami_virtualization_type" : "hvm",
+    "access_key": "{{user `aws_access_key`}}",
+    "secret_key": "{{user `aws_secret_key`}}",
+    "region": "{{user `aws_region`}}",
+    "source_ami": "@BASE_AMI@",
+    "instance_type": "t2.micro",
+    "iam_instance_profile" : "hpcc-build",
+    "ssh_username": "ubuntu",
+    "subnet_id" : "@SUBNET_ID@",
+    "associate_public_ip_address": "true",
+    "ssh_keypair_name": "{{user `ssh_keypair_name`}}",
+    "ssh_private_key_file": "{{user `ssh_private_key_file`}}",
+    "ami_name": "hpcc-systems-dev-{{user `codename`}}-{{user `arch`}}",
+    "ami_groups" : "all"
+  }],
+  "provisioners": [{
+        "type": "shell",
+        "environment_vars": [
+           "HPCC_FULL_VERSION={{user `hpcc_version`}}"
+        ],
+        "scripts": [
+          "./hpcc-dev-{{user `codename`}}-{{user `arch`}}.sh"
+        ]
+ }]
+}
