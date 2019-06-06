@@ -17,19 +17,23 @@ usage()
    echo "   -r <value>: one region."
    echo "   -s <value>: file_server."
    echo "   -t <value>: amazone ec2 type: instance or ebs."
+   echo "   -u <value>: Linux user. 'ubuntu' for Ubuntu and 'centos' for CentOS"
    echo ""
    exit 3
 }
 
 configure_file()
 {
+
+   echo "Template: ${build_script_in}"
+   echo "Generated file ${build_script}" 
    sed "s|@CODENAME@|${codename}|g; \
         s|@ARCH@|${arch}|g; \
         s|@BUILD_TYPE@|${type2}|g; \
         s|@SUBNET_ID@|${subnet_id}|g; \
         s|@BASE_AMI@|${base_ami}|g; \
-        s|@AWS_REGION@|${region}|g"   < ${build_script_in} > ${build_script} 
-
+        s|@USER@|${os_user}|g; \
+        s|@AWS_REGION@|${region}|g"   < ${build_script_in} > ${build_script}
 }
 
 configure_provision()
@@ -47,7 +51,7 @@ run_packer_build()
   log=ami-${region}-log-${now}.log
   num_of_build=$(expr $num_of_build \+ 1)
   build_script=ami-build-json-${region}
-  base_ami=$(cat ${wk_dir}/${codename}/base-${type}-ami | grep ${region} | cut -d' ' -f2)
+  base_ami=$(cat ${wk_dir}/${codename}/base-${type}-ami | grep -v "^#" |  grep ${region} | cut -d' ' -f2)
   subnet_id=$(cat ${wk_dir}/subnet-ids | grep ${region} | cut -d' ' -f2)
   
   configure_file
@@ -93,6 +97,7 @@ file_server=10.240.32.242
 
 wk_dir=
 gpg_passphrase=
+os_user=ubuntu
 
 num_of_failure=0
 num_of_success=0
@@ -103,7 +108,7 @@ log=
 
 # Parse input parameters
 #----------------------------------
-while getopts "*a:c:d:i:npP:qr:s:t:v:" arg
+while getopts "*a:c:d:i:npP:qr:s:t:v:u:" arg
 do
     case "$arg" in
        a) arch="$OPTARG"
@@ -125,6 +130,8 @@ do
        s) file_server="$OPTARG"
           ;;
        t) type="aws_$OPTARG"
+          ;;
+       u) os_user="$OPTARG"
           ;;
        ?) usage
           ;;
@@ -163,6 +170,7 @@ then
 else
    build_script_in=${wk_dir}/${type}/aws-hpcc-dev-build.json.in
 fi
+
 
 if [ ! -e ${build_script_in} ]
 then

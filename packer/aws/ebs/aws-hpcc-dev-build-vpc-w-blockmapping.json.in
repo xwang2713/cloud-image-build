@@ -19,7 +19,7 @@
     "source_ami": "@BASE_AMI@",
     "instance_type": "t2.micro",
     "iam_instance_profile" : "hpcc-build",
-    "ssh_username": "ubuntu",
+    "ssh_username": "@USER@",
     "subnet_id" : "@SUBNET_ID@",
     "associate_public_ip_address": "true",
     "ssh_keypair_name": "{{user `ssh_keypair_name`}}",
