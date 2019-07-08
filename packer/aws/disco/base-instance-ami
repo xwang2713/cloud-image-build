@@ -1,0 +1,22 @@
+# Ubunutu hvm:ebs-ssd registered on AWS EC2 AMIs. Notice ebs-ssd which allow t2.micro type and build instance-store type OK
+# https://cloud-images.ubuntu.com/locator/ec2/
+#
+#
+# !!!! These are AMIs for bionic. Need update
+
+us-east-1 ami-0fba9b33b5304d8b4 N.Virginia
+
+us-east-2 ami-00f26cd9381652bcb Ohio
+us-west-1 ami-0cf785c2a9dc71092 N.California
+us-west-2 ami-062179e04e3988be2 Oregon
+ap-south-1 ami-09cb0aeeb455ad4fe Mumbai
+ap-northeast-1 ami-0a5422cf718cb3291 Tokyo
+ap-northeast-2 ami-05bc8dedb89550319 Seoul
+ap-southeast-1 ami-022d54f3e7fa83918 Singapore
+ap-southeast-2 ami-06a7808d2fd1c048a Sydney
+ca-central-1 ami-0c695af919a16f1b5 Central
+eu-central-1 ami-001259c8460a530c9 Frankfurt
+eu-west-1 ami-0ee3436f275c4f2e8 Ireland
+eu-west-2 ami-06dbb20f07a3c9a20 London
+eu-west-3 ami-0a2d83757c19473d0 Paris
+sa-east-1 ami-0419e6deeb5cf654a Sao-Paulo

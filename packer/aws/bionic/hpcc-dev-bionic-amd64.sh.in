@@ -46,7 +46,6 @@ sudo apt-get install -y \
 
 sudo apt-get install -y \
                  libboost-regex-dev    \
-                 libssl-dev            \
                  libarchive-dev        \
                  libv8-dev             \
                  openjdk-8-jdk         \
@@ -75,6 +74,12 @@ sudo apt-get install -y \
                  libsaxonb-java        \
                  libatlas-base-dev     \
                 --fix-missing         
+
+#libssl-dev            \
+sudo dpkg-reconfigure libc6 && \
+export DEBIAN_FRONTEND=noninteractive && \
+sudo -E apt-get -q --option "Dpkg::Options::=--force-confold" --assume-yes install libssl-dev
+
 
 sudo apt-get install -y python2.7-dev --fix-missing
 sudo apt-get install -y python3-dev --fix-missing

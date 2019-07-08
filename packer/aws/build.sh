@@ -15,6 +15,7 @@ usage()
    echo "   -p use subnet template for VPC setting."
    echo "   -r <value>: one region."
    echo "   -t <value>: amazone ec2 type: instance or ebs."
+   echo "   -u <user>: ssh login user. ubuntu or centos"
    echo "   -v <value>: HPCC Version. For example 6.4.24-1"
    echo ""
    exit
@@ -28,6 +29,7 @@ configure_file()
       s|@ARCH@|${arch}|g; \
       s|@BUILD_TYPE@|${type}|g; \
       s|@SUBNET_ID@|${subnet_id}|g; \
+      s|@USER@|${os_user}|g; \
       s|@BASE_AMI@|${base_ami}|g; \
       s|@AWS_REGION@|${region}|g"   < ${build_script_in} > ${build_script} 
 
@@ -84,6 +86,7 @@ quiet=false
 
 wk_dir=
 
+os_user=ubuntu
 num_of_failure=0
 num_of_success=0
 num_of_build=0
@@ -93,7 +96,7 @@ log=
 
 # Parse input parameters
 #----------------------------------
-while getopts "*a:c:d:i:npqr:t:v:" arg
+while getopts "*a:c:d:i:npqr:t:u:v:" arg
 do
     case "$arg" in
        a) arch="$OPTARG"
@@ -110,9 +113,11 @@ do
           ;;
        r) region="$OPTARG"
           ;;
-       t) type="aws_$OPTARG"
+       t) type="$OPTARG"
           ;;
        v) hpcc_version="$OPTARG"
+          ;;
+       u) os_user="$OPTARG"
           ;;
        ?) usage
           ;;

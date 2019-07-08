@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export codename=el7
+export codename=el6
 export arch=amd64
 export pkgType=rpm
 export now=$(date -u +%Y%m%d-%H%M)
@@ -42,10 +42,8 @@ sudo yum install -y \
                  openssl-devel         \
                  libarchive-devel      \
                  v8-devel              \
-                 java-1.8.0-openjdk-devel \
                  apr-devel             \
                  apr-util-devel        \
-                 hiredis-devel         \
                  tbb-devel             \
                  numactl-devel         \
                  libevent-devel        \
@@ -62,12 +60,33 @@ sudo yum install -y \
                  atlas-devel           
 
 sudo yum install -y \
+                 gettext               \
                  python-devel          \
                  python34-devel        \
                  gnutls                \
                  perl-ExtUtils-MakeMaker \
                  libcouchbase-devel
 
+
+# Install C++11 package
+#------------------------------
+sudo wget http://people.centos.org/tru/devtools-2/devtools-2.repo -O /etc/yum.repos.d/devtools-2.repo
+sudo yum install -y devtoolset-2-gcc devtoolset-2-binutils
+sudo yum install -y devtoolset-2-gcc-gfortran devtoolset-2-gcc-c++
+sudo yum install -y devtoolset-2-libatomic-devel devtoolset-2-gdb devtoolset-2-git devtoolset-2-gitk
+sudo yum install -y  devtoolset-2-valgrind devtoolset-2-elfutils devtoolset-2-strace devtoolset-2-git-gui
+
+
+echo "Install Redis"
+wget http://rpms.remirepo.net/enterprise/6/remi/x86_64//hiredis-last-devel-0.13.3-1.el6.remi.x86_64.rpm
+wget http://rpms.remirepo.net/enterprise/6/remi/x86_64//hiredis-last-0.13.3-1.el6.remi.x86_64.rpm
+sudo rpmi -i hiredis-last-0.13.3-1.el6.remi.x86_64.rpm hiredis-last-devel-0.13.3-1.el6.remi.x86_64.rpm
+rm -rf hiredis-last-0.13.3-1.el6.remi.x86_64.rpm hiredis-last-devel-0.13.3-1.el6.remi.x86_64.rpm
+
+
+echo "Install and set default JDK"
+sudo yum  install -y java-1.8.0-openjdk-devel
+update-alternatives --set java /usr/lib/jvm/jre-1.8.0-openjdk.x86_64/bin/java
 
 echo "Installing git"
 wget https://mirrors.edge.kernel.org/pub/software/scm/git/git-2.9.5.tar.gz
