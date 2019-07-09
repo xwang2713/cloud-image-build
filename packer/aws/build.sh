@@ -13,6 +13,7 @@ usage()
    echo "   -i <value>: region file. One region per line."
    echo "   -n no run. Generate build script only."
    echo "   -p use subnet template for VPC setting."
+   echo "   -P package type. The default is platform-community."
    echo "   -r <value>: one region."
    echo "   -t <value>: amazone ec2 type: instance or ebs."
    echo "   -u <user>: ssh login user. ubuntu or centos"
@@ -30,6 +31,7 @@ configure_file()
       s|@BUILD_TYPE@|${type}|g; \
       s|@SUBNET_ID@|${subnet_id}|g; \
       s|@USER@|${os_user}|g; \
+      s|@PACKAGE@|${package_type}|g; \
       s|@BASE_AMI@|${base_ami}|g; \
       s|@AWS_REGION@|${region}|g"   < ${build_script_in} > ${build_script} 
 
@@ -86,6 +88,7 @@ quiet=false
 
 wk_dir=
 
+package_type=platform-community
 os_user=ubuntu
 num_of_failure=0
 num_of_success=0
@@ -96,7 +99,7 @@ log=
 
 # Parse input parameters
 #----------------------------------
-while getopts "*a:c:d:i:npqr:t:u:v:" arg
+while getopts "*a:c:d:i:nP:pqr:t:u:v:" arg
 do
     case "$arg" in
        a) arch="$OPTARG"
@@ -106,6 +109,8 @@ do
        i) region_file="$OPTARG"
           ;;
        n) dry_run_only=true
+          ;;
+       P) package_type="$OPTARG"
           ;;
        p) use_subnet=true
           ;;

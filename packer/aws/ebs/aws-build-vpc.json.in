@@ -24,7 +24,7 @@
     "associate_public_ip_address": "true",
     "ssh_keypair_name": "{{user `ssh_keypair_name`}}",
     "ssh_private_key_file": "{{user `ssh_private_key_file`}}",
-    "ami_name": "hpcc-systems-{{user `codename`}}-{{user `arch`}}"
+    "ami_name": "hpcc-@PACKAGE@-{{user `hpcc_version`}}-{{user `codename`}}-{{user `arch`}}"
   }],
   "provisioners": [{
         "type": "shell",
@@ -32,7 +32,7 @@
            "HPCC_FULL_VERSION={{user `hpcc_version`}}"
         ],
         "scripts": [
-          "./hpcc-{{user `codename`}}-{{user `arch`}}.sh"
+          "./hpcc-@PACKAGE@-{{user `codename`}}.sh"
         ]
  }]
 }
