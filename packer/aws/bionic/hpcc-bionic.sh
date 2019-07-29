@@ -4,6 +4,8 @@ DEBIAN_FRONTEND=noninteractive
 UCF_FORCE_CONFFNEW=true
 export UCF_FORCE_CONFFNEW DEBIAN_FRONTEND
 
+sleep 120
+
 #sudo apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" dist-upgrade
 sudo apt-get clean
 sudo apt-get update
@@ -75,16 +77,24 @@ sudo chown -R hpcc:hpcc-test /home/hpcc
 
 echo "Install HPCC Platform"
 export PLATFORM=hpccsystems-platform-community_${HPCC_FULL_VERSION}${codename}_${arch}.${pkgType}
+#ming
 #export IFLOCATION=http://cdn.hpccsystems.com/releases/CE-Candidate-${platformVersion}/bin/platform/
-export IFLOCATION=http://wpc.423a.rhocdn.net/00423A/releases/CE-Candidate-${platformVersion}/bin/platform/
-wget --progress=dot:mega --tries 5 $IFLOCATION$PLATFORM
-sudo dpkg -i $PLATFORM
+#export IFLOCATION=http://wpc.423a.rhocdn.net/00423A/releases/CE-Candidate-${platformVersion}/bin/platform/
+#export IFLOCATION=http://10.240.32.242/builds/CE-Candidate-${platformVersion}/bin/platform/
+
+#ming
+#wget --progress=dot:mega --tries 5 $IFLOCATION$PLATFORM
+#sudo dpkg -i $PLATFORM
 
 echo "Download script for later s3"
-sudo wget http://hpccsystems-installs.s3.amazonaws.com/communityedition/util/ips
-sudo fromdos ips
-sudo chmod +x ips
-sudo cp ips /opt/HPCCSystems/sbin
+#ming
+#sudo wget http://hpccsystems-installs.s3.amazonaws.com/communityedition/util/ips
+#sudo fromdos ips
+#sudo chmod +x ips
+#sudo cp ips /opt/HPCCSystems/sbin
 
 echo "remove HPCC user ssh keys"
-sudo rm -rf /home/hpcc/.ssh/*
+#ming
+#sudo rm -rf /home/hpcc/.ssh/*
+
+sudo apt-get install -y grub-legacy-ec2

@@ -123,6 +123,11 @@ sudo python3.4 get-pip.py
 sudo pip3 install awscli --upgrade
 rm -rf get-pip.py
 
+echo "Install devtoolset-7"
+sudo yum install -y centos-release-scl
+sudo yum install -y devtoolset-7
+
+
 echo "Import gpg key"
 aws s3 cp s3://hpcc-build/HPCCSystems.priv .
 gpg --passphrase @GPG_PASSPHRASE@  --import HPCCSystems.priv

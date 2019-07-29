@@ -15,8 +15,8 @@ ACTION="list"
 ACTION=$(echo $ACTION | tr '[:upper:]' '[:lower:]')
 
 ami_prefix=hpcc-systems
-ami_prefix2=${image_prefix}-community
-#ami_prefix2=${image_prefix}-dev
+ami_prefix2=${ami_prefix}-community
+#ami_prefix2=${ami_prefix}-dev
 
 aws ec2 describe-regions | while read x region region2
 do

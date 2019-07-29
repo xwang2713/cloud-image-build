@@ -146,3 +146,8 @@ echo "Import gpg key"
 aws s3 cp s3://hpcc-build/HPCCSystems.priv .
 gpg --passphrase @GPG_PASSPHRASE@  --import HPCCSystems.priv
 rm -rf HPCCSystems.priv
+
+echo "Install devtoolset-7"
+sudo yum install -y centos-release-scl
+sudo yum install -y devtoolset-7
+

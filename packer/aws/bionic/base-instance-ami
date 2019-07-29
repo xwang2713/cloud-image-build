@@ -12,7 +12,8 @@ ap-northeast-1 ami-0a5422cf718cb3291 Tokyo
 ap-northeast-2 ami-05bc8dedb89550319 Seoul
 ap-southeast-1 ami-022d54f3e7fa83918 Singapore
 ap-southeast-2 ami-06a7808d2fd1c048a Sydney
-ca-central-1 ami-0c695af919a16f1b5 Central
+#ca-central-1 ami-0c695af919a16f1b5 Central
+ca-central-1 ami-0434a7135b17f1253 Central
 eu-central-1 ami-001259c8460a530c9 Frankfurt
 eu-west-1 ami-0ee3436f275c4f2e8 Ireland
 eu-west-2 ami-06dbb20f07a3c9a20 London

@@ -77,8 +77,8 @@ sudo chown -R hpcc:hpcc-test /home/hpcc
 
 echo "Install HPCC Platform"
 export PLATFORM=hpccsystems-platform-community_${HPCC_FULL_VERSION}${codename}_${arch}.${pkgType}
-#export IFLOCATION=http://cdn.hpccsystems.com/releases/CE-Candidate-${platformVersion}/bin/platform/
-export IFLOCATION=http://wpc.423a.rhocdn.net/00423A/releases/CE-Candidate-${platformVersion}/bin/platform/
+#export IFLOCATION=https://d2wulyp08c6njk.cloudfront.net/releases/CE-Candidate-${platformVersion}/bin/platform/
+export IFLOCATION=https://d2wulyp08c6njk.cloudfront.net/releases/CE-Candidate-${platformVersion}/bin/platform/
 wget --progress=dot:mega --tries 5 $IFLOCATION$PLATFORM
 sudo dpkg -i $PLATFORM
 
