@@ -1,0 +1,89 @@
+{
+    "variables": {
+        "ssh_name": "ubuntu",
+        "ssh_pass": "hpccdemo",
+        "hostname": "packer-test",
+		"vm_name": "ubuntu-hyperv-18",
+		"output_directory": "vm_outputs/hyperv_18.04_7.2.14",
+		"cpu": "4",
+		"memory": "2048",
+		"disk_size" : "10000",
+		"iso_url": "http://cdimage.ubuntu.com/releases/18.04/release/ubuntu-18.04.2-server-amd64.iso",
+        "iso_checksum": "34416ff83179728d54583bf3f18d42d2",
+        "iso_checksum_type": "md5"
+    },
+
+    "builders": [{
+      "vm_name":"{{user `vm_name`}}",
+      "type": "hyperv-iso",
+      "disk_size": "{{user `disk_size`}}",
+      "guest_additions_mode": "disable",
+      "iso_url": "{{user `iso_url`}}",
+      "iso_checksum_type": "{{user `iso_checksum_type`}}",
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "communicator":"ssh",
+      "ssh_username": "{{user `ssh_name`}}",
+      "ssh_password": "{{user `ssh_pass`}}",
+      "ssh_timeout" : "4h",
+      "http_directory": "../../tools/preseeds",
+	  "http_port_min" : 9001,
+      "http_port_max" : 9001,
+      "boot_wait": "10s",
+      "boot_command": [
+        "<esc><wait10><esc><esc><enter><wait>",
+        "set gfxpayload=1024x768<enter>",
+        "linux /install/vmlinuz ",
+        "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed_ubuntu18_hyperv.cfg ",
+        "debian-installer=en_US auto locale=en_US kbd-chooser/method=us ",
+        "hostname={{.Name}} ",
+        "fb=false debconf/frontend=noninteractive ",
+        "keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA ",
+        "keyboard-configuration/variant=USA console-setup/ask_detect=false <enter>",
+        "initrd /install/initrd.gz<enter>",
+        "boot<enter>"
+      ],
+      "shutdown_command": "echo 'packer' | sudo -S -E shutdown -P now",
+      "memory": "{{user `memory`}}",
+      "cpus": "{{user `cpu`}}",
+      "generation": 2,
+      "enable_secure_boot": false,
+	  "switch_name":"Default Switch",
+	  "output_directory":"{{user `output_directory`}}"
+    }],
+  "provisioners": [
+  {
+	"type":"file",
+	"source":"../../hpcc-systems/bionic/",
+	"destination":"/tmp/"
+  },
+  {
+    "type": "shell",
+    "inline": [
+      "sleep 15",
+	  "sudo apt-get update -y",
+	  "sudo apt-get -y install xterm",
+	  "sudo apt-get -y install g++",
+	  "sudo apt-get -y install expect",
+	  "sudo apt-get -y install libapr1",
+	  "sudo apt-get -y install python",
+	  "sudo apt-get -y install libpython3.6",
+	  "sudo apt-get -y install libpython2.7",
+	  "sudo apt-get -y install curl",
+	  "sudo apt-get -y install libaprutil1",
+	  "sudo apt-get -y install libatlas3-base",
+	  "sudo apt-get -y install libboost-system1.62.0",
+	  "sudo apt-get -y install libmemcached11",
+	  "sudo apt-get -y install libmemcachedutil2",
+	  "sudo apt-get -y install libmysqlclient20",
+	  "sudo apt-get -y install r-base-core",
+	  "sudo apt-get -y install r-cran-rcpp",
+	  "sudo apt-get -y install r-cran-inline",
+	  "sudo apt-get -y install libv8-3.14.5",
+	  "sudo apt-get -y install libboost-regex1.65.1",
+	  "sudo apt-get -y install libxslt1.1",
+	  "sudo apt-get -y install libcurl3-gnutls",
+	  "sudo apt-get -y install ganglia-monitor",
+      "sudo dpkg -i /tmp/*.deb"
+    ]
+  }]
+}
