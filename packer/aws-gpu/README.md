@@ -11,6 +11,19 @@ https://www.packer.io/intro/getting-started/install.html#precompiled-binaries
 Download the appropriate packer binary for your system.
 Put packer in your PATH
 
+### Download HPCC Systems Platform Files
+Run the script that is included in [tools](/tools)
+
+Linux [script](/tools/hpcc_file_downloader.sh):
+```sh
+./hpcc_file_downloader.sh
+```
+
+Windows [script](/tools/hpcc_file_downloader.sh):
+```sh
+packer build NAME.json
+```
+
 ### Set AWS Access and Secret Keys
 Set following keys:
 ACCESS_KEY: AWS access key
