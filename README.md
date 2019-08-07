@@ -74,9 +74,9 @@ Remove AMIs for HPCC version
 
 ## Supported Platforms
 * [AWS](/packer/aws)
-* [GPU Enabled AWS](/packer/aws-gpu)
+* [AWS with GPU Acceleration](/packer/aws-gpu)
 * [Hyper-V](/packer/hyper-v)
-* [Virtual Box](/packer/virtual-bx)
+* [Virtual Box](/packer/virtual-box)
 
 
 Known problem:

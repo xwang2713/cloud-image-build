@@ -7,6 +7,20 @@ https://www.packer.io/intro/getting-started/install.html#precompiled-binaries
 Download the appropriate packer binary for your system.
 Put packer in your PATH
 
+### Download HPCC Systems Platform Files
+Run the script that is included in [tools](/tools)
+
+Linux [script](/tools/hpcc_file_downloader.sh):
+```sh
+./hpcc_file_downloader.sh
+```
+
+Windows [script](/tools/hpcc_file_downloader.sh):
+```sh
+./hpcc_file_downloader.ps1
+```
+
+
 ### Hyper-V
 You need to have Hyper-V enabled on your machine: https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/enable-hyper-v
 Hyper-V and Virtual Box cannot be used at the same time on the same machine. See this StackExchange: https://superuser.com/questions/1208850/why-virtualbox-or-vmware-can-not-run-with-hyper-v-enabled-windows-10

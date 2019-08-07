@@ -21,7 +21,7 @@ Linux [script](/tools/hpcc_file_downloader.sh):
 
 Windows [script](/tools/hpcc_file_downloader.sh):
 ```sh
-packer build NAME.json
+./hpcc_file_downloader.ps1
 ```
 
 ### Set AWS Access and Secret Keys

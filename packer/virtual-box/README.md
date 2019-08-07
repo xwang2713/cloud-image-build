@@ -7,6 +7,21 @@ https://www.packer.io/intro/getting-started/install.html#precompiled-binaries
 Download the appropriate packer binary for your system.
 Put packer in your PATH
 
+
+### Download HPCC Systems Platform Files
+Run the script that is included in [tools](/tools)
+
+Linux [script](/tools/hpcc_file_downloader.sh):
+```sh
+./hpcc_file_downloader.sh
+```
+
+Windows [script](/tools/hpcc_file_downloader.sh):
+```sh
+./hpcc_file_downloader.ps1
+```
+
+
 ### Virtual Box
 You need to have Virtual Box installed on your machine: https://www.virtualbox.org/
 
