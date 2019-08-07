@@ -19,7 +19,7 @@ Linux [script](/tools/hpcc_file_downloader.sh):
 ./hpcc_file_downloader.sh
 ```
 
-Windows [script](/tools/hpcc_file_downloader.sh):
+PowerShell [script](/tools/hpcc_file_downloader.sh):
 ```sh
 ./hpcc_file_downloader.ps1
 ```
