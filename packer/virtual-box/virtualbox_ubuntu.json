@@ -8,7 +8,7 @@
 		"image_format": "ova",
 		"guest_os_type": "Ubuntu_64",
 		"iso_url":"http://us.cdimage.ubuntu.com/releases/18.04/release/ubuntu-18.04.3-server-amd64.iso",
-		"iso_checksum":"cb7cd5a0c94899a04a536441c8b6d2bf ",
+		"iso_checksum":"cb7cd5a0c94899a04a536441c8b6d2bf",
 		"iso_checksum_type":"md5",
 		"cpu": "4",
 		"memory": "2048",
