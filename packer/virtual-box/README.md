@@ -42,6 +42,9 @@ packer build NAME.json
 Create a Virtual Box instance using the newly created image. The image has the all the HPCC ports automatically opened when creating a new instance. 
 
 SSH into your instance and start the HPCC System Platform with:
+* username: ubuntu
+* password: hpccdemo
+
 ```sh
 sudo systemctl start hpccsystems-platform.target
 ```

@@ -41,6 +41,9 @@ packer build NAME.json
 Create a Hyper-V instance using the newly created image. This assumes prior Hyper-V networking experience.
 
 SSH into your instance and start the HPCC System Platform with:
+* username: ubuntu
+* password: hpccdemo
+
 ```sh
 sudo systemctl start hpccsystems-platform.target
 ```
