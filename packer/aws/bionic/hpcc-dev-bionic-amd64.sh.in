@@ -124,6 +124,6 @@ sudo pip3 install awscli --upgrade
 rm -rf get-pip.py
 
 echo "Import gpg key"
-aws s3 cp s3://hpcc-build/HPCCSystems.priv .
+aws s3 cp s3://@S3_BUCKET@/HPCCSystems.priv .
 gpg --pinentry-mode=loopback --passphrase @GPG_PASSPHRASE@  --import HPCCSystems.priv
 rm -rf HPCCSystems.priv

@@ -18,7 +18,7 @@
     "region": "{{user `aws_region`}}",
     "source_ami": "@BASE_AMI@",
     "instance_type": "t2.micro",
-    "iam_instance_profile" : "hpcc-build",
+    "iam_instance_profile" : "@INSTANCE_PROFILE@",
     "ssh_username": "@USER@",
     "subnet_id" : "@SUBNET_ID@",
     "associate_public_ip_address": "true",

@@ -123,12 +123,19 @@ sudo python3.4 get-pip.py
 sudo pip3 install awscli --upgrade
 rm -rf get-pip.py
 
+echo "Install devtoolset-2"
+wget http://people.centos.org/tru/devtools-2/devtools-2.repo -O /etc/yum.repos.d/devtools-2.repo
+yum install -y devtoolset-2-gcc devtoolset-2-binutils
+yum install -y devtoolset-2-gcc-gfortran devtoolset-2-gcc-c++
+yum install -y devtoolset-2-libatomic-devel devtoolset-2-gdb devtoolset-2-git devtoolset-2-gitk
+yum install -y  devtoolset-2-valgrind devtoolset-2-elfutils devtoolset-2-strace devtoolset-2-git-gui
+
 echo "Install devtoolset-7"
 sudo yum install -y centos-release-scl
 sudo yum install -y devtoolset-7
 
 
 echo "Import gpg key"
-aws s3 cp s3://hpcc-build/HPCCSystems.priv .
+aws s3 cp s3://@S3_BUCKET@/HPCCSystems.priv .
 gpg --passphrase @GPG_PASSPHRASE@  --import HPCCSystems.priv
 rm -rf HPCCSystems.priv

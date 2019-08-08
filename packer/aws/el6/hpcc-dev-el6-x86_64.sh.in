@@ -98,9 +98,9 @@ sudo make install
 cd ..
 rm -rf git-2.9.5 git-2.9.5.tar.gz
 
-wget http://mysql.mirrors.hoobly.com/Downloads/MySQL-5.6/MySQL-devel-5.6.42-1.el7.x86_64.rpm
-sudo rpm -i MySQL-devel-5.6.42-1.el7.x86_64.rpm
-rm -rf MySQL-devel-5.6.42-1.el7.x86_64.rpm 
+wget http://mysql.mirrors.hoobly.com/Downloads/MySQL-5.6/MySQL-devel-5.6.43-1.el7.x86_64.rpm
+sudo rpm -i MySQL-devel-5.6.43-1.el7.x86_64.rpm
+rm -rf MySQL-devel-5.6.43-1.el7.x86_64.rpm 
 
 echo "Installing Nodejs"
 curl --silent --location https://rpm.nodesource.com/setup_8.x | sudo bash -
@@ -143,7 +143,7 @@ sudo pip3 install awscli --upgrade
 rm -rf get-pip.py
 
 echo "Import gpg key"
-aws s3 cp s3://hpcc-build/HPCCSystems.priv .
+aws s3 cp s3://@S3_BUCKET@/HPCCSystems.priv .
 gpg --passphrase @GPG_PASSPHRASE@  --import HPCCSystems.priv
 rm -rf HPCCSystems.priv
 

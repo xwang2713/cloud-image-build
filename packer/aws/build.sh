@@ -12,7 +12,7 @@ usage()
    echo "   -c <value>: Linux distro codename. For example, xential, trusty, el7"
    echo "   -i <value>: region file. One region per line."
    echo "   -n no run. Generate build script only."
-   echo "   -p use subnet template for VPC setting."
+   echo "   -p <value> subnet file for VPC setting. The default is subnet-ids "
    echo "   -P package type. The default is platform-community."
    echo "   -r <value>: one region."
    echo "   -t <value>: amazone ec2 type: instance or ebs."
@@ -44,7 +44,7 @@ run_packer_build()
   num_of_build=$(expr $num_of_build \+ 1)
   build_script=ami-build-json-${region}
   base_ami=$(cat ${wk_dir}/${codename}/base-ami | grep ${region} | cut -d' ' -f2)
-  subnet_id=$(cat ${wk_dir}/subnet-ids | grep ${region} | cut -d' ' -f2)
+  subnet_id=$(cat ${wk_dir}/${subnet_file} | grep ${region} | cut -d' ' -f2)
   
   configure_file
 
@@ -94,12 +94,13 @@ num_of_failure=0
 num_of_success=0
 num_of_build=0
 dry_run_only=false
-use_subnet=false
+use_subnet=true
 log=
+subnet_file=subnet-ids
 
 # Parse input parameters
 #----------------------------------
-while getopts "*a:c:d:i:nP:pqr:t:u:v:" arg
+while getopts "*a:c:d:i:nP:p:qr:t:u:v:" arg
 do
     case "$arg" in
        a) arch="$OPTARG"
@@ -112,7 +113,7 @@ do
           ;;
        P) package_type="$OPTARG"
           ;;
-       p) use_subnet=true
+       p) setnet_file="$OPTARG"
           ;;
        q) quiet=true
           ;;

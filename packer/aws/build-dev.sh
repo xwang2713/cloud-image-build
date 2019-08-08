@@ -11,11 +11,13 @@ usage()
    echo "   -a <value>: arch: amd64 or x86_64"
    echo "   -c <value>: Linux distro codename. For example, xenial, trusty, el7"
    echo "   -i <value>: region file. One region per line."
+   echo "   -I <value>: IAM Instance profile. The default is hpcc-build"
    echo "   -n no run. Generate build script only."
-   echo "   -p use subnet template for VPC setting."
+   echo "   -p subnet file for VPC setting. The default is subnet-ids"
    echo "   -P GPG passphrase."
    echo "   -r <value>: one region."
    echo "   -s <value>: file_server."
+   echo "   -S <value>: AWS S3 bucket name. The default is hpcc-build-ca-central-1"
    echo "   -t <value>: amazone ec2 type: instance or ebs."
    echo "   -u <value>: Linux user. 'ubuntu' for Ubuntu and 'centos' for CentOS"
    echo ""
@@ -31,6 +33,7 @@ configure_file()
         s|@ARCH@|${arch}|g; \
         s|@BUILD_TYPE@|${type2}|g; \
         s|@SUBNET_ID@|${subnet_id}|g; \
+        s|@INSTANCE_PROFILE@|${instance_profile}|g; \
         s|@BASE_AMI@|${base_ami}|g; \
         s|@USER@|${os_user}|g; \
         s|@AWS_REGION@|${region}|g"   < ${build_script_in} > ${build_script}
@@ -41,6 +44,7 @@ configure_provision()
    sed "s|@RINSIDE_URL@|${RINSIDE_URL}|g; \
         s|@CMAKE_URL@|${CMAKE_URL}|g; \
         s|@GPG_URL@|${GPG_URL}|g; \
+        s|@S3_BUCKET@|${s3_bucket_name}|g; \
         s|@GPG_PASSPHRASE@|${gpg_passphrase}|g"   < ${provision_script}.in > ${provision_script} 
    chmod +x ${provision_script}
 }
@@ -52,7 +56,7 @@ run_packer_build()
   num_of_build=$(expr $num_of_build \+ 1)
   build_script=ami-build-json-${region}
   base_ami=$(cat ${wk_dir}/${codename}/base-${type}-ami | grep -v "^#" |  grep ${region} | cut -d' ' -f2)
-  subnet_id=$(cat ${wk_dir}/subnet-ids | grep ${region} | cut -d' ' -f2)
+  subnet_id=$(cat ${wk_dir}/${subnet_file} | grep ${region} | cut -d' ' -f2)
   
   configure_file
 
@@ -103,29 +107,37 @@ num_of_failure=0
 num_of_success=0
 num_of_build=0
 dry_run_only=false
-use_subnet=false
+use_subnet=true
+instance_profile=hpcc-build
+subnet_file=subnet-ids
+s3_bucket_name=hpcc-build-ca-central-1
 log=
+
 
 # Parse input parameters
 #----------------------------------
-while getopts "*a:c:d:i:npP:qr:s:t:v:u:" arg
+while getopts "*a:c:d:I:i:np:P:qr:S:s:t:v:u:" arg
 do
     case "$arg" in
        a) arch="$OPTARG"
           ;;
        c) codename="$OPTARG"
           ;;
+       I) instance_profile="$OPTARG"
+          ;;
        i) region_file="$OPTARG"
           ;;
        n) dry_run_only=true
           ;;
-       p) use_subnet=true
+       p) subnet_file=subnet-ids
           ;;
        P) gpg_passphrase="$OPTARG"
           ;;
        q) quiet=true
           ;;
        r) region="$OPTARG"
+          ;;
+       S) s3_bucket_name="$OPTARG"
           ;;
        s) file_server="$OPTARG"
           ;;
