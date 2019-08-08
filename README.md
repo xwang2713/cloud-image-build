@@ -1,13 +1,13 @@
 # cloud-image-build
 
-##Prerequisites
-###Install packer
+## Prerequisites
+### Install packer
 https://www.packer.io/intro/getting-started/install.html#precompiled-binaries
 Download packer_<version>_linux_amd64.zip
 ```sh
 sudo unzip -d /usr/local/bin packer_<version>_linux_amd64.zip
 ```
-###Set Environment Variables for AWS EC2
+### Set Environment Variables for AWS EC2
 Set following environment variables:
 ACCESS_KEY: AWS access key
 SECRET_KEY: AWS secret key
@@ -15,7 +15,7 @@ EC2_ACCOUNT_ID: EC2 account id
 EC2_PIRVATE_KEY: EC2 private key full path
 EC2_CERT: EC2 certificate full path
 
-###AWS Client
+### AWS Client
 packer doesn't need AWS Client on local system. But if you want to list/delete AMI entries in ec2 or s3 you need AWS Client command-line  
 https://docs.aws.amazon.com/cli/latest/userguide/awscli-install-linux.html
 ```sh
@@ -71,6 +71,13 @@ Remove AMIs for HPCC version
 ```sh
 ./ami_cli.sh <hpcc version> delete
 ```
+
+## Supported Platforms
+* [AWS](/packer/aws)
+* [AWS with GPU Acceleration](/packer/aws-gpu)
+* [Hyper-V](/packer/hyper-v)
+* [Virtual Box](/packer/virtual-box)
+
 
 Known problem:
 Build fail for Ubuntu 18.04. AWS ticket: https://console.aws.amazon.com/support/cases?region=us-east-1#/5997229071/en
