@@ -8,8 +8,8 @@
 		"cpu": "4",
 		"memory": "2048",
 		"disk_size" : "10000",
-		"iso_url": "http://cdimage.ubuntu.com/releases/18.04/release/ubuntu-18.04.2-server-amd64.iso",
-        "iso_checksum": "34416ff83179728d54583bf3f18d42d2",
+		"iso_url":"http://us.cdimage.ubuntu.com/releases/18.04/release/ubuntu-18.04.3-server-amd64.iso",
+		"iso_checksum":"cb7cd5a0c94899a04a536441c8b6d2bf",
         "iso_checksum_type": "md5"
     },
 
