@@ -33,7 +33,7 @@
         "<esc><wait10><esc><esc><enter><wait>",
         "set gfxpayload=1024x768<enter>",
         "linux /install/vmlinuz ",
-        "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed_ubuntu18_hyperv.cfg ",
+        "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed_ubuntu18.cfg ",
         "debian-installer=en_US auto locale=en_US kbd-chooser/method=us ",
         "hostname={{.Name}} ",
         "fb=false debconf/frontend=noninteractive ",
