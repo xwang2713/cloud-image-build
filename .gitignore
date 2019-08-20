@@ -1,0 +1,5 @@
+packer/virtual-box/packer_cache/*
+packer/hyper-v/packer_cache/*
+packer/hyper-v/vm_outputs/*
+packer/virtual-box/output-virtualbox-iso/*
+hpcc-systems/*

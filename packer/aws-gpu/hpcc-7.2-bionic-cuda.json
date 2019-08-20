@@ -1,0 +1,112 @@
+ {
+    "variables": {
+		"aws_access_key": "",
+		"aws_secret_key": "",
+		"aws_instance_size":"t2.large"
+    },
+
+  "builders": [{
+    "type": "amazon-ebs",
+    "access_key": "{{user `aws_access_key`}}",
+    "secret_key": "{{user `aws_secret_key`}}",
+    "region": "us-east-1",
+    "source_ami_filter": {
+      "filters": {
+        "virtualization-type": "hvm",
+        "name": "ubuntu/images/*ubuntu-bionic-18.04-amd64-server-*",
+        "root-device-type": "ebs"
+      },
+      "owners": ["099720109477"],
+      "most_recent": true
+    },
+    "instance_type": "{{user `aws_instance_size`}}",
+    "ssh_username": "ubuntu",
+    "ami_name": "GPU - hpccsystems-platform-community_7.2.14-1bionic_amd64 {{timestamp}}",
+	"associate_public_ip_address": true,
+	"vpc_id": "vpc-0b45e2a57c4cce670",
+	"subnet_id":"subnet-09e9c23071164f292",
+	"launch_block_device_mappings": [
+		{
+		  "device_name": "/dev/sda1",
+		  "volume_size":20,
+		  "volume_type": "gp2",
+		  "delete_on_termination": true
+		}
+	],
+	"ami_description":"HPCC Systems Community Edition with GPU acceleration for Pytorch, TensorFlow, and CUDA applications."
+	
+  }],
+  
+  "provisioners": [
+  {
+	"type":"file",
+	"source":"hpcc_systems/bionic/",
+	"destination":"/tmp/"
+  },
+  {
+	"type":"file",
+	"source":"hpcc_on_start.local",
+	"destination":"/tmp/"
+  },
+  {
+    "type": "shell",
+    "inline": [
+      "sleep 15",
+	  "sudo apt-get update -y",
+	  "sudo apt-get -y install xterm",
+	  "sudo apt-get -y install g++",
+	  "sudo apt-get -y install expect",
+	  "sudo apt-get -y install libapr1",
+	  "sudo apt-get -y install python",
+	  "sudo apt-get -y install libpython3.6",
+	  "sudo apt-get -y install libpython2.7",
+	  "sudo apt-get -y install curl",
+	  "sudo apt-get -y install libaprutil1",
+	  "sudo apt-get -y install libatlas3-base",
+	  "sudo apt-get -y install libboost-system1.62.0",
+	  "sudo apt-get -y install libmemcached11",
+	  "sudo apt-get -y install libmemcachedutil2",
+	  "sudo apt-get -y install libmysqlclient20",
+	  "sudo apt-get -y install r-base-core",
+	  "sudo apt-get -y install r-cran-rcpp",
+	  "sudo apt-get -y install r-cran-inline",
+	  "sudo apt-get -y install libv8-3.14.5",
+	  "sudo apt-get -y install libboost-regex1.65.1",
+	  "sudo apt-get -y install libxslt1.1",
+	  "sudo apt-get -y install libcurl3-gnutls",
+	  "sudo apt-get -y install ganglia-monitor",
+	  "sudo mv /tmp/hpcc_on_start.local /etc/",
+	  "sudo chmod +x /etc/hpcc_on_start.local",
+      "sudo dpkg -i /tmp/*.deb",
+
+	  
+	  "sudo apt-get update -y",
+	  "yes | sudo apt-get install python3-pip",
+	  "yes | sudo -H -u hpcc pip3 install --user https://download.pytorch.org/whl/cu100/torch-1.1.0-cp36-cp36m-linux_x86_64.whl",
+	  "yes | sudo -H -u hpcc pip3 install --user https://download.pytorch.org/whl/cu100/torchvision-0.3.0-cp36-cp36m-linux_x86_64.whl",
+	  
+	  "yes | sudo -H -u hpcc pip3 install --user pandas",
+	  "yes | sudo -H -u hpcc pip3 install --user h5py",
+	  
+	  "wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/cuda-repo-ubuntu1804_10.0.130-1_amd64.deb",
+	  "sudo dpkg -i cuda-repo-ubuntu1804_10.0.130-1_amd64.deb",
+	  "sudo apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub",
+	  "sudo apt-get update -y",
+	  "wget http://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64/nvidia-machine-learning-repo-ubuntu1804_1.0.0-1_amd64.deb",
+	  "sudo apt-get install -y ./nvidia-machine-learning-repo-ubuntu1804_1.0.0-1_amd64.deb",
+	  "sudo apt-get update -y",
+	  
+	  "sudo apt-get install -y --no-install-recommends nvidia-driver-418",
+	  "sudo apt-get install -y --no-install-recommends cuda-10-0 libcudnn7=7.6.0.64-1+cuda10.0  libcudnn7-dev=7.6.0.64-1+cuda10.0",
+	  
+	  "sudo rm cuda-repo-ubuntu1804_10.0.130-1_amd64.deb",
+	  "sudo rm nvidia-machine-learning-repo-ubuntu1804_1.0.0-1_amd64.deb",
+
+	  "sudo -H -u hpcc pip3 install --user tensorflow-gpu",
+	  "sudo -H -u hpcc pip3 install --user keras",
+	  
+	  "sudo mkdir /var/lib/HPCCSystems/mydropzone"
+	  
+    ]
+  }]
+}
