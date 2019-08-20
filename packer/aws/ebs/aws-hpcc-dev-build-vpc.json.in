@@ -24,7 +24,17 @@
     "associate_public_ip_address": "true",
     "ssh_keypair_name": "{{user `ssh_keypair_name`}}",
     "ssh_private_key_file": "{{user `ssh_private_key_file`}}",
-    "ami_name": "hpcc-systems-dev-{{user `codename`}}-{{user `arch`}}"
+    "ami_name": "hpcc-systems-dev-{{user `codename`}}-{{user `arch`}}",
+    "tags" {
+      "lifecycle": "dev",
+      "market": "hpccsystems",
+      "owner_email": "xiaoming.wang@lexisnexis.com",
+      "product": "hpccsystems",
+      "project": "hpcc builds",
+      "service": "ec2",
+      "support_email": "xiaoming.wang@lexisnexis.com",  
+      "application": "hpccsystems"  
+    }
   }],
   "provisioners": [{
         "type": "shell",
