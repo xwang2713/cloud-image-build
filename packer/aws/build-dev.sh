@@ -129,7 +129,7 @@ do
           ;;
        n) dry_run_only=true
           ;;
-       p) subnet_file=subnet-ids
+       p) subnet_file="$OPTARG"
           ;;
        P) gpg_passphrase="$OPTARG"
           ;;
