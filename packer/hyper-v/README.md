@@ -1,4 +1,6 @@
 # HPCC Systems Platform Hyper-V Image
+created by Robert Kennedy (roberken)
+
 For creating a Hyper-V image with HPCC Systems Platform Community edition pre-installed.
 
 
