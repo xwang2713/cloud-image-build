@@ -63,11 +63,24 @@ sudo yum install -y \
 
 sudo yum install -y \
                  python-devel          \
-                 python34-devel        \
                  gnutls                \
                  perl-ExtUtils-MakeMaker \
                  libcouchbase-devel
 
+echo "Install devtoolset-7"
+sudo yum install -y centos-release-scl
+sudo yum install -y devtoolset-7
+
+echo "Installing Python3"
+sudo yum install -y rh-python36
+sudo yum install -y rh-python36-python-devel
+source /opt/rh/rh-python36/enable
+#scl enable rh-python36 bash
+
+echo "Installing pip3"
+#pip3 is probably already installed:
+#sudo /opt/rh/rh-python36/root/usr/bin/pip3
+sudo yum install -y python3-pip
 
 echo "Installing git"
 wget https://mirrors.edge.kernel.org/pub/software/scm/git/git-2.9.5.tar.gz
@@ -79,12 +92,12 @@ sudo make install
 cd ..
 rm -rf git-2.9.5 git-2.9.5.tar.gz
 
-wget http://mysql.mirrors.hoobly.com/Downloads/MySQL-5.6/MySQL-devel-5.6.42-1.el7.x86_64.rpm
-sudo rpm -i MySQL-devel-5.6.42-1.el7.x86_64.rpm
-rm -rf MySQL-devel-5.6.42-1.el7.x86_64.rpm 
+wget http://mysql.mirrors.hoobly.com/Downloads/MySQL-5.6/MySQL-devel-5.6.44-1.el7.x86_64.rpm
+sudo rpm -i MySQL-devel-5.6.44-1.el7.x86_64.rpm
+rm -rf MySQL-devel-5.6.44-1.el7.x86_64.rpm 
 
 echo "Installing Nodejs"
-curl --silent --location https://rpm.nodesource.com/setup_8.x | sudo bash -
+curl --silent --location https://rpm.nodesource.com/setup_12.x | sudo bash -
 sudo yum install -y nodejs
 
 echo "Installing R"
@@ -118,21 +131,16 @@ sudo chown -R centos:centos /var/lib/jenkins
 sudo ln -s /var/lib/jenkins /jenkins
 
 echo "Install AWS Cli"
-curl -O https://bootstrap.pypa.io/get-pip.py
-sudo python3.4 get-pip.py
+#sudo /opt/rh/rh-python36/root/usr/bin/pip3 install awscli --upgrade
 sudo pip3 install awscli --upgrade
-rm -rf get-pip.py
 
 echo "Install devtoolset-2"
 wget http://people.centos.org/tru/devtools-2/devtools-2.repo -O /etc/yum.repos.d/devtools-2.repo
-yum install -y devtoolset-2-gcc devtoolset-2-binutils
-yum install -y devtoolset-2-gcc-gfortran devtoolset-2-gcc-c++
-yum install -y devtoolset-2-libatomic-devel devtoolset-2-gdb devtoolset-2-git devtoolset-2-gitk
-yum install -y  devtoolset-2-valgrind devtoolset-2-elfutils devtoolset-2-strace devtoolset-2-git-gui
+sudo yum install -y devtoolset-2-gcc devtoolset-2-binutils
+sudo yum install -y devtoolset-2-gcc-gfortran devtoolset-2-gcc-c++
+sudo yum install -y devtoolset-2-libatomic-devel devtoolset-2-gdb devtoolset-2-git devtoolset-2-gitk
+sudo yum install -y  devtoolset-2-valgrind devtoolset-2-elfutils devtoolset-2-strace devtoolset-2-git-gui
 
-echo "Install devtoolset-7"
-sudo yum install -y centos-release-scl
-sudo yum install -y devtoolset-7
 
 
 echo "Import gpg key"
