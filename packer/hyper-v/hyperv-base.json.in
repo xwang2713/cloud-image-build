@@ -1,0 +1,63 @@
+{
+    "variables": {
+        "ssh_name": "@SSH_USER@",
+        "ssh_pass": "@SSH_PASSWD@",
+        "hostname": "@HOSTNAME@",
+        "vm_name": "@VM_NAME@",
+        "output_directory": "@OUTPUT_DIR@",
+        "cpu": "@CPU@",
+      	"memory": "@MEMORY@",
+        "disk_size" : "@DISK_SIZE@",
+      	"iso_url":"@ISO_URL@",
+        "iso_checksum":"@ISO_CHECKSUM@",
+        "iso_checksum_type": "md5",
+	      "switch_name": "@SWITCH@"
+    },
+
+    "builders": [{
+      "vm_name":"{{user `vm_name`}}",
+      "type": "hyperv-iso",
+      "disk_size": "{{user `disk_size`}}",
+      "guest_additions_mode": "disable",
+      "iso_url": "{{user `iso_url`}}",
+      "iso_checksum_type": "{{user `iso_checksum_type`}}",
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "communicator":"ssh",
+      "ssh_username": "{{user `ssh_name`}}",
+      "ssh_password": "{{user `ssh_pass`}}",
+      "ssh_timeout" : "4h",
+      "http_directory": "@PRESEEDS_DIR@",
+      "http_port_min" : 9001,
+      "http_port_max" : 9001,
+      "boot_wait": "10s",
+      "boot_command": [
+        "<esc><wait10><esc><esc><enter><wait>",
+        "set gfxpayload=1024x768<enter>",
+        "linux /install/vmlinuz ",
+        "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed_@CODENAME@.cfg ",
+        "debian-installer=en_US auto locale=en_US kbd-chooser/method=us ",
+        "hostname={{.Name}} ",
+        "fb=false debconf/frontend=noninteractive ",
+        "keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA ",
+        "keyboard-configuration/variant=USA console-setup/ask_detect=false <enter>",
+        "initrd /install/initrd.gz<enter>",
+        "boot<enter>"
+      ],
+      "shutdown_command": "echo 'packer' | sudo -S -E shutdown -P now",
+      "memory": "{{user `memory`}}",
+      "cpus": "{{user `cpu`}}",
+      "generation": 2,
+      "enable_secure_boot": false,
+      "switch_name":"{{user `switch_name`}}",
+      "output_directory":"{{user `output_directory`}}",
+	  "configuration_version":"@CONFIGURATION_VERSION@",
+      "skip_export": false
+    }],
+  "provisioners": [
+  {
+    "type": "shell",
+    "scripts": [
+          "./hpcc-base-@CODENAME@-@ARCH@.sh"
+    ]
+  }]
+}

@@ -2,59 +2,60 @@
 For creating a Hyper-V image with HPCC Systems Platform Community edition pre-installed.
 
 
+## Build HPCC Systems Hyper-V Image
+
 ### Install packer
 https://www.packer.io/intro/getting-started/install.html#precompiled-binaries
 Download the appropriate packer binary for your system.
 Put packer in your PATH
 
-### Download HPCC Systems Platform Files
-Run the script that is included in [tools](/tools)
-
-Linux [script](/tools/hpcc_file_downloader.sh):
+### Get this cloud-image-build repo
 ```sh
-./hpcc_file_downloader.sh
-```
-
-PowerShell [script](/tools/hpcc_file_downloader.sh):
-```sh
-./hpcc_file_downloader.ps1
+git clone https://github.com/xwang2713/cloud-image-build
 ```
 
 
-### Hyper-V
+### Enable Hyper-V
 You need to have Hyper-V enabled on your machine: https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/enable-hyper-v
 Hyper-V and Virtual Box cannot be used at the same time on the same machine. See this StackExchange: https://superuser.com/questions/1208850/why-virtualbox-or-vmware-can-not-run-with-hyper-v-enabled-windows-10
 
-### Validate .JSON
-Packer does not need any client tools for building on AWS. First, validate the .json after adding the keys.
+
+### Build
+Create a build directory outside of cloud-image-build
 ```sh
-packer validate NAME.json
+mkdir build
 ```
-
-### Build the GPU enabled AMI
-Next, build the AMI with the following:
+Build a base image if haven't done so
 ```sh
-packer build NAME.json
+cd build
+cp ../<cloud-image-build>/hyper-v/build-base.ps1
+./build-base.ps1
 ```
+This will create base image at "hpcc-base-vm"
 
-### Start and Connect to Your Instance
-Create a Hyper-V instance using the newly created image. This assumes prior Hyper-V networking experience.
-
-SSH into your instance and start the HPCC System Platform with:
-* username: ubuntu
-* password: hpccdemo
-
+Build HPCC Systems Platform Hyper-V image:
+In build directory
 ```sh
-sudo systemctl start hpccsystems-platform.target
+cp ../<cloud-image-build>/hyper-v/build.ps1
+# Open build.ps1 and change the version to expected value
+./build.ps1
 ```
+If build successfully there should be image file: HPCCSystemVM-HyperV-<version>.zip
 
-From here you can access your HPCC System via port 8010. Ensure your Hypervisor network settings allow for access on port 8010.
 
-### Supports
-This image supports 
+## Run HPCC Systems Hyper-V VM
 
-### Known Issues:
-After starting the HPCC System, the Landing Zone's directory can sometimes not be created, and can prevent files from being uploaded to the cluster. Fix this by simply manually creating the directory:
-```sh
-sudo mkdir /var/lib/HPCCSystems/mydropzone
-```
+
+### Get Hyper-V zip file  
+Get VM file  HPCCSystemVM-HyperV-<version>.zip
+unzip it
+
+
+### Hyper-V network swtich
+Make sure at least one network switch vailable in Hyper-V environment
+Import Hyper-V image from Windows "Hyper-V Manager"
+You probably will be asked to select a network switch.
+HPCC System Platform will be started automatically.
+Login to VM with user/password:  hpccdemo/hpccdemo
+
+Use provided URL to access EclWatch

@@ -1,0 +1,38 @@
+{
+   "variables": {
+      "ssh_name": "@SSH_USER@",
+      "ssh_pass": "@SSH_PASSWD@",
+      "vm_name": "@VM_NAME@",
+      "output_directory": "@OUTPUT_DIR@",
+      "switch_name": "@SWITCH@"
+    },
+    "builders":[{
+       "type": "hyperv-vmcx",
+       "clone_from_vmcx_path": "@VM_BASE_DIR@",
+       "vm_name":"{{user `vm_name`}}",
+       "guest_additions_mode": "disable",
+       "communicator":"ssh",
+       "ssh_username": "{{user `ssh_name`}}",
+       "ssh_password": "{{user `ssh_pass`}}",
+       "ssh_timeout" : "4h",
+       "boot_wait": "10s",
+       "shutdown_command": "echo 'packer' | sudo -S -E shutdown -P now",
+       "switch_name":"{{user `switch_name`}}",
+       "output_directory":"{{user `output_directory`}}",
+       "configuration_version":"@CONFIGURATION_VERSION@",
+       "headless": true
+    }],
+    "provisioners":[
+    { "type":"file",
+      "source": "@DOWNLOAD_DIR@",
+      "destination": "/tmp/"
+    },
+    {
+       "type": "shell",
+       "environment_vars": ["VM_HOSTNAME={{user `vm_name`}}"],
+       "scripts": [ 
+          "./hpcc-@CODENAME@-@ARCH@.sh"
+       ]
+    }]
+
+}
