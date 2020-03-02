@@ -62,7 +62,6 @@ sudo yum install -y \
 sudo yum install -y \
                  gettext               \
                  python-devel          \
-                 python34-devel        \
                  gnutls                \
                  perl-ExtUtils-MakeMaker \
                  libcouchbase-devel
@@ -70,11 +69,23 @@ sudo yum install -y \
 
 # Install C++11 package
 #------------------------------
+echo "Install devtoolset-7"
+sudo yum install -y centos-release-scl
+sudo yum install -y devtoolset-7
+
 sudo wget http://people.centos.org/tru/devtools-2/devtools-2.repo -O /etc/yum.repos.d/devtools-2.repo
 sudo yum install -y devtoolset-2-gcc devtoolset-2-binutils
 sudo yum install -y devtoolset-2-gcc-gfortran devtoolset-2-gcc-c++
 sudo yum install -y devtoolset-2-libatomic-devel devtoolset-2-gdb devtoolset-2-git devtoolset-2-gitk
 sudo yum install -y  devtoolset-2-valgrind devtoolset-2-elfutils devtoolset-2-strace devtoolset-2-git-gui
+
+echo "Installing Python3"
+sudo yum install -y rh-python36
+#sudo yum install -y rh-python36-python-devel
+#pip3 seems also installed. Just update
+sudo /opt/rh/rh-python36/root/usr/bin/pip3  install --upgrade pip
+source /opt/rh/rh-python36/enable
+
 
 
 echo "Install Redis"
@@ -98,12 +109,12 @@ sudo make install
 cd ..
 rm -rf git-2.9.5 git-2.9.5.tar.gz
 
-wget http://mysql.mirrors.hoobly.com/Downloads/MySQL-5.6/MySQL-devel-5.6.43-1.el7.x86_64.rpm
-sudo rpm -i MySQL-devel-5.6.43-1.el7.x86_64.rpm
-rm -rf MySQL-devel-5.6.43-1.el7.x86_64.rpm 
+wget http://mysql.mirrors.hoobly.com/Downloads/MySQL-5.6/MySQL-devel-5.6.44-1.el7.x86_64.rpm
+sudo rpm -i MySQL-devel-5.6.44-1.el7.x86_64.rpm
+rm -rf MySQL-devel-5.6.44-1.el7.x86_64.rpm 
 
 echo "Installing Nodejs"
-curl --silent --location https://rpm.nodesource.com/setup_8.x | sudo bash -
+curl --silent --location https://rpm.nodesource.com/setup_10.x | sudo bash -
 sudo yum install -y nodejs
 
 echo "Installing R"
@@ -137,17 +148,11 @@ sudo chown -R centos:centos /var/lib/jenkins
 sudo ln -s /var/lib/jenkins /jenkins
 
 echo "Install AWS Cli"
-curl -O https://bootstrap.pypa.io/get-pip.py
-sudo python3.4 get-pip.py
-sudo pip3 install awscli --upgrade
-rm -rf get-pip.py
+sudo /opt/rh/rh-python36/root/usr/bin/pip3 install awscli --upgrade
 
 echo "Import gpg key"
 aws s3 cp s3://@S3_BUCKET@/HPCCSystems.priv .
 gpg --passphrase @GPG_PASSPHRASE@  --import HPCCSystems.priv
 rm -rf HPCCSystems.priv
 
-echo "Install devtoolset-7"
-sudo yum install -y centos-release-scl
-sudo yum install -y devtoolset-7
 

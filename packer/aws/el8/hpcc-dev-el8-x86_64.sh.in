@@ -20,87 +20,105 @@ echo "Installing HPCC build prerequisites"
 sudo yum install -y \
                  epel-release          \
                  wget                  \
-                 rpm-build             \
+                 git                   \
                  gcc                   \
                  gcc-c++               \
-                 curl-devel            \
-                 freetype-devel        \
-                 zip                   \
-                 make                  
-
-sudo yum install -y \
+                 automake              \
+                 m4                    \
+                 make                  \
                  bison                 \
                  flex                  \
                  binutils-devel        \
                  openldap-devel        \
-                 cppunit-devel         \
                  libicu-devel          \
-                 libxslt-devel        
-
-sudo yum install -y \
+                 libxslt-devel         \
+                 libarchive            \
                  boost-devel           \
                  openssl-devel         \
-                 libarchive-devel      \
-                 v8-devel              \
-                 java-1.8.0-openjdk-devel \
                  apr-devel             \
-                 apr-util-devel        \
+                 apr-util-devel
+
+LIBARCHIVE_DEVEL=libarchive-devel-3.3.2-7.el8.x86_64.rpm
+wget http://mirror.centos.org/centos/8/PowerTools/x86_64/os/Packages/${LIBARCHIVE_DEVEL}
+sudo yum install ${LIBARCHIVE_DEVEL}
+rm -rf ${LIBARCHIVE_DEVEL}
+
+sudo yum install -y \
                  hiredis-devel         \
-                 tbb-devel             \
                  numactl-devel         \
                  libevent-devel        \
+                 java-latest-openjdk-devel \
                  sqlite-devel          \
-                 libmemcached-devel    \
-                 memcached-devel       
+                 tbb-devel             \
+                 libmemcached          \
+                 rpm-build             \
+                 curl-devel            \
+                 gtk2-devel            \
+                 freetype-devel        \
+                 zip                   \
+                 libtool               \
+                 mysql-devel
+
+LIBMEMCACHED_DEVEL=libmemcached-devel-1.0.18-15.el8.x86_64.rpm
+wget http://mirror.centos.org/centos/8/PowerTools/x86_64/os/Packages/${LIBMEMCACHED_DEVEL}
+sudo yum install ${LIBMEMCACHED_DEVEL}
+rm -rf ${LIBMEMCACHED_DEVEL}
+
+V8=v8-6.7.17-8.el8.x86_64.rpm 
+V8_DEVEL=v8-devel-6.7.17-8.el8.x86_64.rpm
+wget http://repo.okay.com.mx/centos/8/x86_64/release/${V8}
+wget http://repo.okay.com.mx/centos/8/x86_64/release/${V8_DEVEL}
+sudo yum install ${V8} ${V8_DEVEL}
+rm -rf ${V8} ${V8_DEVEL}
+
+sudo yum moduel install python36/build
+sudo alternatives --set python /usr/bin/python3
+sudo yum install -y python3-pip
+sudo pip3 install --upgrade pip3
+sudo yum module install nodejs/development
+sudo yum install -y mysql-devel
+
+# R
+sudo yum module install per:5:26
+PER_UNICODE=perl-Unicode-EastAsianWidth-1.33-13.el8.noarch.rpm
+sudo yum install -y ${PER_UNICODE}
+rm -rf ${PER_UNICODE}
+TEXTINFO=texinfo-6.5-4.el8.x86_64.rpm
+TEXTINFO_TEX=texinfo-tex-6.5-4.el8.x86_64.rpm
+wget http://mirror.centos.org/centos/8/PowerTools/x86_64/os/Packages/${TEXTINFO}
+wget http://mirror.centos.org/centos/8/PowerTools/x86_64/os/Packages/${TEXTINFO_TEX}
+sudo yum install -y ${TEXTINFO} ${TEXTINFO_TEX}
+rm -rf ${TEXTINFO} ${TEXTINFO_TEX}
+RBLAS=openblas-Rblas-0.3.3-2.el8.x86_64.rpm
+wget http://mirror.centos.org/centos/8/PowerTools/x86_64/os/Packages/${RBLAS}
+sudo yum install -y ${RBLAS}
+rm -rf {RBLAS}
+sudo yum install -y R-core R-core-devel
+RCPP=Rcpp_1.0.3.tar.gz
+wget https://cran.r-project.org/src/contrib/${RCPP}
+sudo R CMD INSTALL ${RCPP}
+rm -rf ${RCPP}
+RINSIDE=RInside_0.2.15.tar.gz
+wget https://cran.r-project.org/src/contrib/${RINSIDE}
+sudo R CMD INSTALL ${RINSIDE}
+rm -rf ${RINSIDE}
+
+echo "Maven"
+MAVEN=apache-maven-3.6.3
+wget http://apache.mirrors.hoobly.com/maven/maven-3/3.6.3/binaries/${MAVEN}-bin.tar.gz
+sudo tar -zxvf ${MAVEN}-bin.tar.gz -C /usr/local
+
+sudo ln -s /usr/local/${MAVEN}/usr/local/maven
+sudo echo "export MAVEN_HOME=/usr/local/maven" >> /etc/profile
+sudo echo "export PATH=${MAVEN_HOME}/bin:$PATH" >> /etc/profile
+rm -rf ${MAVEN}-bin.tar.gz
 
 sudo yum install -y \
-                 libtool               \
-                 automake              \
-                 make                  \
-                 m4                    \
-                 gtk2-devel             \
+                 cppunit-devel         \
                  atlas-devel           
 
-sudo yum install -y \
-                 python-devel          \
-                 python34-devel        \
-                 gnutls                \
-                 perl-ExtUtils-MakeMaker \
-                 libcouchbase-devel
-
-
-echo "Installing git"
-wget https://mirrors.edge.kernel.org/pub/software/scm/git/git-2.9.5.tar.gz
-tar -zxvf git-2.9.5.tar.gz
-cd git-2.9.5
-./configure
-make -j4
-sudo make install
-cd ..
-rm -rf git-2.9.5 git-2.9.5.tar.gz
-
-wget http://mysql.mirrors.hoobly.com/Downloads/MySQL-5.6/MySQL-devel-5.6.42-1.el7.x86_64.rpm
-sudo rpm -i MySQL-devel-5.6.42-1.el7.x86_64.rpm
-rm -rf MySQL-devel-5.6.42-1.el7.x86_64.rpm 
-
-echo "Installing Nodejs"
-curl --silent --location https://rpm.nodesource.com/setup_8.x | sudo bash -
-sudo yum install -y nodejs
-
-echo "Installing R"
-sudo yum install -y R-core-devel
-export Rcpp_package=Rcpp_0.12.19.tar.gz
-wget https://cran.r-project.org/src/contrib/Archive/Rcpp/${Rcpp_package}
-sudo R CMD INSTALL ${Rcpp_package}
-rm -rf ${Rcpp_package}
-
-export RInside_package=RInside_0.2.12.tar.gz
-wget https://cran.r-project.org/src/contrib/Archive/RInside/${RInside_package}
-sudo R CMD INSTALL ${RInside_package}
-rm -rf ${RInside_package}
-
 echo "Get expected CMake"
-export cmake_version=3.13.1
+export cmake_version=3.16.4
 export cmake_name=cmake-${cmake_version}-Linux-x86_64
 wget https://github.com/Kitware/CMake/releases/download/v${cmake_version}/${cmake_name}.tar.gz
 tar -zxf ${cmake_name}.tar.gz
@@ -118,22 +136,7 @@ sudo chown -R centos:centos /var/lib/jenkins
 sudo ln -s /var/lib/jenkins /jenkins
 
 echo "Install AWS Cli"
-curl -O https://bootstrap.pypa.io/get-pip.py
-sudo python3.4 get-pip.py
 sudo pip3 install awscli --upgrade
-rm -rf get-pip.py
-
-echo "Install devtoolset-2"
-wget http://people.centos.org/tru/devtools-2/devtools-2.repo -O /etc/yum.repos.d/devtools-2.repo
-yum install -y devtoolset-2-gcc devtoolset-2-binutils
-yum install -y devtoolset-2-gcc-gfortran devtoolset-2-gcc-c++
-yum install -y devtoolset-2-libatomic-devel devtoolset-2-gdb devtoolset-2-git devtoolset-2-gitk
-yum install -y  devtoolset-2-valgrind devtoolset-2-elfutils devtoolset-2-strace devtoolset-2-git-gui
-
-echo "Install devtoolset-7"
-sudo yum install -y centos-release-scl
-sudo yum install -y devtoolset-7
-
 
 echo "Import gpg key"
 aws s3 cp s3://@S3_BUCKET@/HPCCSystems.priv .

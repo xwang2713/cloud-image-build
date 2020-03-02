@@ -142,7 +142,6 @@ sudo yum install -y devtoolset-2-libatomic-devel devtoolset-2-gdb devtoolset-2-g
 sudo yum install -y  devtoolset-2-valgrind devtoolset-2-elfutils devtoolset-2-strace devtoolset-2-git-gui
 
 
-
 echo "Import gpg key"
 aws s3 cp s3://@S3_BUCKET@/HPCCSystems.priv .
 gpg --passphrase @GPG_PASSPHRASE@  --import HPCCSystems.priv
