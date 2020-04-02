@@ -73,6 +73,7 @@ sudo apt-get install -y \
                  xsltproc              \
                  libsaxonb-java        \
                  libatlas-base-dev     \
+                 libbsd-dev     \
                 --fix-missing         
 
 #libssl-dev            \

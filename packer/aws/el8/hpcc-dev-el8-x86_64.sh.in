@@ -57,6 +57,7 @@ sudo yum install -y \
                  freetype-devel        \
                  zip                   \
                  libtool               \
+                 libbsd-devel          \
                  mysql-devel
 
 LIBMEMCACHED_DEVEL=libmemcached-devel-1.0.18-15.el8.x86_64.rpm

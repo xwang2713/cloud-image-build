@@ -62,6 +62,7 @@ sudo yum install -y \
 sudo yum install -y \
                  gettext               \
                  python-devel          \
+                 libbsd-devel          \
                  gnutls                \
                  perl-ExtUtils-MakeMaker \
                  libcouchbase-devel
@@ -80,13 +81,23 @@ sudo yum install -y devtoolset-2-libatomic-devel devtoolset-2-gdb devtoolset-2-g
 sudo yum install -y  devtoolset-2-valgrind devtoolset-2-elfutils devtoolset-2-strace devtoolset-2-git-gui
 
 echo "Installing Python3"
-sudo yum install -y rh-python36
+#sudo yum install -y rh-python36
 #sudo yum install -y rh-python36-python-devel
 #pip3 seems also installed. Just update
-sudo /opt/rh/rh-python36/root/usr/bin/pip3  install --upgrade pip
-source /opt/rh/rh-python36/enable
-
-
+#sudo /opt/rh/rh-python36/root/usr/bin/pip3  install --upgrade pip
+#source /opt/rh/rh-python36/enable
+wget https://www.python.org/ftp/python/3.6.10/Python-3.6.10.tgz
+tar -zxvf Python-3.6.10.tgz
+cd Python-3.6.10
+./configure --enable-optimizations --enable-shared
+sudo make altinstall
+cd ..
+sudo rm -rf Python*
+sudo ln -s /usr/local/bin/python3.6 /usr/local/bin/python3
+sudo rm -rf /usr/bin/python3
+sudo ln -s /usr/local/bin/python3 /usr/bin/python3
+sudo sh -c 'echo "export LD_LIBRARY_PATH=/usr/local/lib:\${LD_LIBRARY_PATH}" >> /etc/profile'
+. /etc/profile
 
 echo "Install Redis"
 wget http://rpms.remirepo.net/enterprise/6/remi/x86_64//hiredis-last-devel-0.13.3-1.el6.remi.x86_64.rpm
@@ -148,7 +159,8 @@ sudo chown -R centos:centos /var/lib/jenkins
 sudo ln -s /var/lib/jenkins /jenkins
 
 echo "Install AWS Cli"
-sudo /opt/rh/rh-python36/root/usr/bin/pip3 install awscli --upgrade
+#sudo /opt/rh/rh-python36/root/usr/bin/pip3 install awscli --upgrade
+sudo sh -c 'source /etc/profile;  python3 -m pip install awscli --upgrade'
 
 echo "Import gpg key"
 aws s3 cp s3://@S3_BUCKET@/HPCCSystems.priv .

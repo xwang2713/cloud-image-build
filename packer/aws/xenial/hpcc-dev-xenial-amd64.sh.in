@@ -74,14 +74,37 @@ sudo apt-get install -y \
                  xsltproc              \
                  libsaxonb-java        \
                  libatlas-base-dev     \
+                 libbsd-dev           \
                 --fix-missing         
 
+#g++-7
+sudo apt-get install -y software-properties-common
+sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+sudo apt update
+sudo apt install g++-7 -y
+
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 60 \
+                         --slave /usr/bin/g++ g++ /usr/bin/g++-7 
+sudo update-alternative --config gcc
+gcc --version
+g++ --version
+ls -la /usr/bin/ | grep -oP "[\S]*(gcc|g\+\+)(-[a-z]+)*[\s]" | xargs sudo bash -c 'for link in ${@:1}; do ln -s -f "/usr/bin/${link}-${0}" "/usr/bin/${link}"; done' 7
+
+
 sudo apt-get install -y python2.7-dev --fix-missing
-sudo apt-get install -y python3-dev --fix-missing
+#sudo apt-get install -y python3-dev --fix-missing
 sudo apt-get install -y libgtk2.0-dev --fix-missing
 sudo apt-get install -y libcurl4-gnutls-dev --fix-missing
 sudo apt-get install -y bison --fix-missing
 sudo apt-get install -y flex --fix-missing
+
+sudo add-apt-repository ppa:deadsnakes/ppa
+sudo apt-get update
+sudo apt-get install -y python3.6-dev
+# This need re-do in user data when start thee instance
+sudo echo "alias python3=\"python3.6\"" >> /etc/profile
+#sudo rm -rf /usr/bin/python3
+#sudo ln -s /usr/bin/python3.6 /usr/bin/python3
 
 echo "Installing Nodejs"
 curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
