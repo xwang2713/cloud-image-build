@@ -8,6 +8,7 @@ sudo mkdir -p /usr/local/ec2
 
 echo "unzip tools"
 sudo unzip ec2-ami-tools.zip -d /usr/local/ec2
+tools_version=$(ls -d /usr/local/ec2/ec2-ami-tools* | cut -d'/' -f5 | cut -d'-' -f4)
 
 echo "Create /etc/profile.d/ec2envvars.sh"
 sudo touch /etc/profile.d/ec2envvars.sh
@@ -25,6 +26,6 @@ echo "add to etc/profile.d/ec2envvars.sh export variable EC2_AMITOOL_HOME"
 #sudo bash -c 'echo "export EC2_AMITOOL_HOME=/usr/local/ec2/\${EC2_AMI_PACKAGE}" >> /etc/profile.d/ec2envvars.sh'
 #sudo bash -c 'echo "export PATH=/usr/local/ec2/\${EC2_AMI_PACkAGE}/bin:$PATH:" >> /etc/profile.d/ec2envvars.sh'
 
-sudo bash -c 'echo "export EC2_AMITOOL_HOME=/usr/local/ec2/ec2-ami-tools-1.5.7" >> /etc/profile.d/ec2envvars.sh'
-sudo bash -c 'echo "export PATH=/usr/local/ec2/ec2-ami-tools-1.5.7/bin:$PATH:" >> /etc/profile.d/ec2envvars.sh'
+sudo bash -c 'echo "export EC2_AMITOOL_HOME=/usr/local/ec2/ec2-ami-tools-${tools_version}" >> /etc/profile.d/ec2envvars.sh'
+sudo bash -c 'echo "export PATH=/usr/local/ec2/ec2-ami-tools-${tools_version}/bin:$PATH:" >> /etc/profile.d/ec2envvars.sh'
 #cat /etc/profile.d/ec2envvars.sh

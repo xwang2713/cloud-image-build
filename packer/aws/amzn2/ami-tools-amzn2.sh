@@ -1,31 +1,20 @@
 #!/bin/bash
 
-DEBIAN_FRONTEND=noninteractive
-UCF_FORCE_CONFFNEW=true
-export UCF_FORCE_CONFFNEW DEBIAN_FRONTEND
-
-#sudo apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" dist-upgrade
-#sudo apt-get clean
-#sudo apt-get update
-#sudo apt-get install -y wget unzip
-#sudo apt-get install -y ruby
-
 echo "wget for ec2 ami tools"
 wget https://s3.amazonaws.com/ec2-downloads/ec2-ami-tools.zip
 
 echo "make directory"
 sudo mkdir -p /usr/local/ec2
-tools_version=$(ls -d /usr/local/ec2/ec2-ami-tools* | cut -d'/' -f5 | cut -d'-' -f4)
 
 echo "unzip tools"
 sudo unzip ec2-ami-tools.zip -d /usr/local/ec2
-
+tools_version=$(ls -d /usr/local/ec2/ec2-ami-tools* | cut -d'/' -f5 | cut -d'-' -f4)
 echo "Create /etc/profile.d/ec2envvars.sh"
 sudo touch /etc/profile.d/ec2envvars.sh
 
 echo "Installing kpartx, grub as required by ec2-ami-tools"
-sudo apt-get install kpartx -y
-sudo apt-get install grub-legacy-ec2 -y
+sudo yum -y install kpartx -y
+sudo yum -y install grub-legacy-ec2 
 sudo sed -i 's/console=hvc0/console=ttyS0/' /boot/grub/menu.lst
 sudo sed -i 's/LABEL=UEFI.*//' /etc/fstab
 
