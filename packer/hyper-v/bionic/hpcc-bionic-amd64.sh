@@ -6,6 +6,7 @@ sudo apt-get -y install net-tools
 
 # Install HPCC Platform and Plugins
 sudo dpkg -i /tmp/*.deb 
+sudo apt-get -y -f install || exit 1
 sudo rm /tmp/*.deb
 
 cat > /tmp/get-ip-address << EOM
