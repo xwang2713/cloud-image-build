@@ -5,8 +5,17 @@ sudo apt-get update -y
 sudo apt-get -y install net-tools
 
 # Install HPCC Platform and Plugins
-sudo dpkg -i /tmp/*.deb 
+sudo dpkg -i /tmp/hpccsystems-platform-community*.deb 
 sudo apt-get -y -f install || exit 1
+
+ls /tmp/hpccsystems-plugin*.deb | \
+while read file
+do
+  sudo dpkg -i $file
+  sudo apt-get -y -f install || sudo rm /tmp/*.deb && break
+done
+
+[ ! -e /tmp/hpccystems*.deb ] && exit 1
 sudo rm /tmp/*.deb
 
 cat > /tmp/get-ip-address << EOM
