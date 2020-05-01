@@ -26,11 +26,11 @@ sudo yum install -y \
                  libicu                \
                  boost-regex           \
                  openldap              \
-                 openssl-server        \
-                 openssl-clients       \
+                 openssl         \
+                 openssl-libs       \
                  libtool               \
                  libxslt               \
-                 libxml                \
+                 libxml2                \
                  expect                \
                  libarchive            \
                  rsync                 \
@@ -72,10 +72,11 @@ sudo yum install -y \
 #sudo pip3 install awscli --upgrade
 #rm -rf get-pip.py
 
-FULL_VERSION=${HPCC_VERSION}
+FULL_VERSION=${HPCC_FULL_VERSION}
 VERSION=${FULL_VERSION%-*} 
-PLATFORM_PACKAGE=hpccsystems-platform-community_${FULL_VERSION}.amzn2.x86_64.rpm
+#PLATFORM_PACKAGE=hpccsystems-platform-community_${FULL_VERSION}.amzn2.x86_64.rpm
+PLATFORM_PACKAGE=hpccsystems-platform-community_${FULL_VERSION}.amzn1.x86_64.rpm
 
-wget  "http://wpc.423a.rhocdn.net/00423A/releases/CE-Candidate-${VERSION}/bin/platform/${PLATFORM_PACKAGE}" 
-yum install --nogpgcheck -y "${PLATFORM_PACKAGE}" 
+wget  "https://d2wulyp08c6njk.cloudfront.net/releases/CE-Candidate-${VERSION}/bin/platform/${PLATFORM_PACKAGE}" 
+sudo yum install --nogpgcheck -y "${PLATFORM_PACKAGE}" 
 rm -rf  "${PLATFORM_PACKAGE}"

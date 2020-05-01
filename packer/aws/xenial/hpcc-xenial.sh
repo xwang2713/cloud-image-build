@@ -28,7 +28,6 @@ sudo apt-get install -y --no-install-recommends \
                 libnuma1              \
                 libxml2               \
                 libxslt1.1            \
-                g++                   \
                 openssh-client        \
                 openssh-server        \
                 expect                \
@@ -49,6 +48,8 @@ sudo apt-get install -y --no-install-recommends \
 
 #git libboost-regex1.54.0 libboost-regex-dev libicu52 libicu-dev libxalan-c111 libxerces-c3.1 binutils libldap-2.4-2 libldap2-dev openssl zlib1g g++ openssh-client openssh-server expect libarchive13 rsync lib32z1-dev tofrodos build-essential libfuse-dev libcurl4-openssl-dev libxml2-dev mime-support subversion autoconf libtool libxslt1.1 libxml2 libapr1 libaprutil1 zip libtbb2 libnuma1
 
+if [[ "${HPCC_FULL_VERSION}" > "7.8" ]]
+then
 #g++-7
 sudo apt-get install -y software-properties-common
 sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
@@ -56,7 +57,7 @@ sudo apt update
 sudo apt install g++-7 -y
 
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 60 \
-	                         --slave /usr/bin/g++ g++ /usr/bin/g++-7
+                         --slave /usr/bin/g++ g++ /usr/bin/g++-7
 sudo update-alternative --config gcc
 gcc --version
 g++ --version
@@ -64,13 +65,16 @@ ls -la /usr/bin/ | grep -oP "[\S]*(gcc|g\+\+)(-[a-z]+)*[\s]" | xargs sudo bash -
 
 sudo add-apt-repository ppa:deadsnakes/ppa
 sudo apt-get update
-sudo apt-get install -y python3.6
+sudo apt-get install -y python3.6 libpython3.6
 # This need re-do in user data when start thee instance
 sudo ln -s /usr/bin/python3.6 /usr/bin/python3
 
+else
+   sudo apt-get install -y g++ libpython3.5 g
+fi
 
 echo "Installing instance cloud pre-requisites"
-sudo apt-get install -y tofrodos build-essential libfuse-dev libxml2-dev libcurl4-openssl-dev mime-support subversion autoconf libtool
+sudo apt-get install -y tofrodos build-essential libfuse-dev libxml2-dev libcurl3-gnutls libcurl4-openssl-dev mime-support subversion autoconf libtool
 
 echo "Install s3fs"
 wk_dir=$(pwd)
