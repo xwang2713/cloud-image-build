@@ -47,8 +47,7 @@ sudo apt-get install -y \
 sudo apt-get install -y \
                  libboost-regex-dev    \
                  libarchive-dev        \
-                 libv8-dev             \
-                 openjdk-8-jdk         \
+                 default-jdk         \
                  libapr1-dev           \
                  libaprutil1-dev       \
                  libiberty-dev         \
