@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export codename=eoan
+export codename=focal
 export arch=amd64
 export pkgType=deb
 export now=$(date -u +%Y%m%d-%H%M)
@@ -47,7 +47,8 @@ sudo apt-get install -y \
 sudo apt-get install -y \
                  libboost-regex-dev    \
                  libarchive-dev        \
-                 default-jdk         \
+                 libv8-dev             \
+                 openjdk-8-jdk         \
                  libapr1-dev           \
                  libaprutil1-dev       \
                  libiberty-dev         \
@@ -101,7 +102,7 @@ sudo R CMD INSTALL ${RInside_package}
 rm -rf ${RInside_package}
 
 echo "Get expected CMake"
-export cmake_version=3.13.1
+export cmake_version=3.17.2
 export cmake_name=cmake-${cmake_version}-Linux-x86_64
 wget https://github.com/Kitware/CMake/releases/download/v${cmake_version}/${cmake_name}.tar.gz
 tar -zxf ${cmake_name}.tar.gz

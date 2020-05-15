@@ -25,6 +25,8 @@ do
     echo 
     echo "Process region $region2 ..."
     #ec2-describe-images --region $region2  | while read name id image x
+    #echo "aws ec2 describe-images --region $region2 --query 'Images[*].{ID:ImageId Name:Name}' \
+    #    --owners $EC2_ACCOUNT_ID | grep ${ami_prefix} | while read id name "
     aws ec2 describe-images --region $region2 --query 'Images[*].{ID:ImageId Name:Name}' \
         --owners $EC2_ACCOUNT_ID | grep ${ami_prefix} | while read id name 
     do

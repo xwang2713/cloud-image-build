@@ -85,7 +85,7 @@ sudo apt install g++-7 -y
 
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 60 \
                          --slave /usr/bin/g++ g++ /usr/bin/g++-7 
-sudo update-alternative --config gcc
+sudo update-alternatives --config gcc
 gcc --version
 g++ --version
 ls -la /usr/bin/ | grep -oP "[\S]*(gcc|g\+\+)(-[a-z]+)*[\s]" | xargs sudo bash -c 'for link in ${@:1}; do ln -s -f "/usr/bin/${link}-${0}" "/usr/bin/${link}"; done' 7

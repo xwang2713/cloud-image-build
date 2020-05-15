@@ -12,7 +12,7 @@ sudo apt-get install -y ruby
 
 export platformVersion=${HPCC_FULL_VERSION%-*}
 export buildCode=${HPCC_FULL_VERSION#*-}
-export codename=disco
+export codename=eoan
 export arch=amd64
 export pkgType=deb
 export now=$(date -u +%Y%m%d-%H%M)
