@@ -12,7 +12,7 @@ sudo apt-get install -y ruby
 
 export platformVersion=${HPCC_FULL_VERSION%-*}
 export buildCode=${HPCC_FULL_VERSION#*-}
-export codename=eoan
+export codename=focal
 export arch=amd64
 export pkgType=deb
 export now=$(date -u +%Y%m%d-%H%M)

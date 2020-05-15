@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export codename=eoan
+export codename=focal
 export arch=amd64
 export pkgType=deb
 export now=$(date -u +%Y%m%d-%H%M)
