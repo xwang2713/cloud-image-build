@@ -102,7 +102,7 @@ sudo R CMD INSTALL ${RInside_package}
 rm -rf ${RInside_package}
 
 echo "Get expected CMake"
-export cmake_version=3.13.1
+export cmake_version=3.17.2
 export cmake_name=cmake-${cmake_version}-Linux-x86_64
 wget https://github.com/Kitware/CMake/releases/download/v${cmake_version}/${cmake_name}.tar.gz
 tar -zxf ${cmake_name}.tar.gz
