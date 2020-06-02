@@ -74,8 +74,8 @@ sudo yum install -y \
 
 FULL_VERSION=${HPCC_FULL_VERSION}
 VERSION=${FULL_VERSION%-*} 
-#PLATFORM_PACKAGE=hpccsystems-platform-community_${FULL_VERSION}.amzn2.x86_64.rpm
-PLATFORM_PACKAGE=hpccsystems-platform-community_${FULL_VERSION}.amzn1.x86_64.rpm
+PLATFORM_PACKAGE=hpccsystems-platform-community_${FULL_VERSION}.amzn2.x86_64.rpm
+#PLATFORM_PACKAGE=hpccsystems-platform-community_${FULL_VERSION}.amzn1.x86_64.rpm
 
 wget  "https://d2wulyp08c6njk.cloudfront.net/releases/CE-Candidate-${VERSION}/bin/platform/${PLATFORM_PACKAGE}" 
 sudo yum install --nogpgcheck -y "${PLATFORM_PACKAGE}" 
