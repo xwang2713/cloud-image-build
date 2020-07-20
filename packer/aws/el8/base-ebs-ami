@@ -2,6 +2,7 @@
 #Select region and subscribe. It is free to our build image t2.micro
 #Flowwing is not from Centos.org and shouldn't be used
 #ca-central-1 ami-0d7499af0874fa5c0 Canada
+ca-central-1 ami-07a182edcd7d04084 Canada
 
 #ap-northeast-2
 #ap-south-1

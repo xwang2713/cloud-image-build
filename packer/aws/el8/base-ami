@@ -1,6 +1,7 @@
 #Need got https://aws.amazon.com/marketplace/pp?sku=6x5jmcajty9edm3f211pqjfn2 
 #Select region and subscribe. It is free to our build image t2.micro
-ca-central-1 ami-00fe7f6351d0b4853 Canada
+#ca-central-1 ami-00fe7f6351d0b4853 Canada
+ca-central-1 ami-07a182edcd7d04084 Canada
 
 #ap-northeast-2
 #ap-south-1

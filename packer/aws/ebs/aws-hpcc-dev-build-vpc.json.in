@@ -17,7 +17,7 @@
     "secret_key": "{{user `aws_secret_key`}}",
     "region": "{{user `aws_region`}}",
     "source_ami": "@BASE_AMI@",
-    "instance_type": "t2.micro",
+    "instance_type": "t2.xlarge",
     "iam_instance_profile" : "@INSTANCE_PROFILE@",
     "ssh_username": "@USER@",
     "subnet_id" : "@SUBNET_ID@",

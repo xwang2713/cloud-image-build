@@ -13,13 +13,17 @@ sudo yum update
 
 sleep 10
 
-sudo yum install -y unzip
+# Enable PowerTool packages
+sudo dnf -y install dnf-plugins-core
+sudo dnf -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+sudo dnf config-manager --set-enabled PowerTools
 
 echo "Installing HPCC build prerequisites"
 
 sudo yum install -y \
                  epel-release          \
                  wget                  \
+                 unzip                 \
                  git                   \
                  gcc                   \
                  gcc-c++               \
@@ -32,16 +36,11 @@ sudo yum install -y \
                  openldap-devel        \
                  libicu-devel          \
                  libxslt-devel         \
-                 libarchive            \
+                 libarchive-devel      \
                  boost-devel           \
                  openssl-devel         \
                  apr-devel             \
                  apr-util-devel
-
-LIBARCHIVE_DEVEL=libarchive-devel-3.3.2-7.el8.x86_64.rpm
-wget http://mirror.centos.org/centos/8/PowerTools/x86_64/os/Packages/${LIBARCHIVE_DEVEL}
-sudo yum install ${LIBARCHIVE_DEVEL}
-rm -rf ${LIBARCHIVE_DEVEL}
 
 sudo yum install -y \
                  hiredis-devel         \
@@ -50,7 +49,7 @@ sudo yum install -y \
                  java-latest-openjdk-devel \
                  sqlite-devel          \
                  tbb-devel             \
-                 libmemcached          \
+                 libmemcached-devel    \
                  rpm-build             \
                  curl-devel            \
                  gtk2-devel            \
@@ -60,47 +59,30 @@ sudo yum install -y \
                  libbsd-devel          \
                  mysql-devel
 
-LIBMEMCACHED_DEVEL=libmemcached-devel-1.0.18-15.el8.x86_64.rpm
-wget http://mirror.centos.org/centos/8/PowerTools/x86_64/os/Packages/${LIBMEMCACHED_DEVEL}
-sudo yum install ${LIBMEMCACHED_DEVEL}
-rm -rf ${LIBMEMCACHED_DEVEL}
+#V8=v8-6.7.17-8.el8.x86_64.rpm 
+#V8_DEVEL=v8-devel-6.7.17-8.el8.x86_64.rpm
+#wget http://repo.okay.com.mx/centos/8/x86_64/release/${V8}
+#wget http://repo.okay.com.mx/centos/8/x86_64/release/${V8_DEVEL}
+#sudo yum install -y ${V8} ${V8_DEVEL}
+#rm -rf ${V8} ${V8_DEVEL}
 
-V8=v8-6.7.17-8.el8.x86_64.rpm 
-V8_DEVEL=v8-devel-6.7.17-8.el8.x86_64.rpm
-wget http://repo.okay.com.mx/centos/8/x86_64/release/${V8}
-wget http://repo.okay.com.mx/centos/8/x86_64/release/${V8_DEVEL}
-sudo yum install ${V8} ${V8_DEVEL}
-rm -rf ${V8} ${V8_DEVEL}
-
-sudo yum moduel install python36/build
+sudo yum install -y python2-devel
+sudo yum module install -y python36/build
 sudo alternatives --set python /usr/bin/python3
 sudo yum install -y python3-pip
 sudo pip3 install --upgrade pip3
-sudo yum module install nodejs/development
+
+sudo yum module install -y nodejs/development
 sudo yum install -y mysql-devel
 
-# R
-sudo yum module install per:5:26
-PER_UNICODE=perl-Unicode-EastAsianWidth-1.33-13.el8.noarch.rpm
-sudo yum install -y ${PER_UNICODE}
-rm -rf ${PER_UNICODE}
-TEXTINFO=texinfo-6.5-4.el8.x86_64.rpm
-TEXTINFO_TEX=texinfo-tex-6.5-4.el8.x86_64.rpm
-wget http://mirror.centos.org/centos/8/PowerTools/x86_64/os/Packages/${TEXTINFO}
-wget http://mirror.centos.org/centos/8/PowerTools/x86_64/os/Packages/${TEXTINFO_TEX}
-sudo yum install -y ${TEXTINFO} ${TEXTINFO_TEX}
-rm -rf ${TEXTINFO} ${TEXTINFO_TEX}
-RBLAS=openblas-Rblas-0.3.3-2.el8.x86_64.rpm
-wget http://mirror.centos.org/centos/8/PowerTools/x86_64/os/Packages/${RBLAS}
-sudo yum install -y ${RBLAS}
-rm -rf {RBLAS}
+# R 
 sudo yum install -y R-core R-core-devel
 RCPP=Rcpp_1.0.3.tar.gz
-wget https://cran.r-project.org/src/contrib/${RCPP}
+wget https://cran.r-project.org/src/contrib/00Archive/Rcpp/${RCPP}
 sudo R CMD INSTALL ${RCPP}
 rm -rf ${RCPP}
 RINSIDE=RInside_0.2.15.tar.gz
-wget https://cran.r-project.org/src/contrib/${RINSIDE}
+wget https://cran.r-project.org/src/contrib/00Archive/RInside/${RINSIDE}
 sudo R CMD INSTALL ${RINSIDE}
 rm -rf ${RINSIDE}
 
@@ -108,15 +90,12 @@ echo "Maven"
 MAVEN=apache-maven-3.6.3
 wget http://apache.mirrors.hoobly.com/maven/maven-3/3.6.3/binaries/${MAVEN}-bin.tar.gz
 sudo tar -zxvf ${MAVEN}-bin.tar.gz -C /usr/local
-
-sudo ln -s /usr/local/${MAVEN}/usr/local/maven
-sudo echo "export MAVEN_HOME=/usr/local/maven" >> /etc/profile
-sudo echo "export PATH=${MAVEN_HOME}/bin:$PATH" >> /etc/profile
+sudo ln -s /usr/local/${MAVEN} /usr/local/maven
+sudo sh -c 'echo "export MAVEN_HOME=/usr/local/maven" >> /etc/profile'
+sudo sh -c 'echo "export PATH=${MAVEN_HOME}/bin:$PATH" >> /etc/profile'
 rm -rf ${MAVEN}-bin.tar.gz
 
-sudo yum install -y \
-                 cppunit-devel         \
-                 atlas-devel           
+sudo yum install -y atlas-devel           
 
 echo "Get expected CMake"
 export cmake_version=3.16.4
@@ -141,5 +120,5 @@ sudo pip3 install awscli --upgrade
 
 echo "Import gpg key"
 aws s3 cp s3://@S3_BUCKET@/HPCCSystems.priv .
-gpg --passphrase @GPG_PASSPHRASE@  --import HPCCSystems.priv
+gpg --batch --yes --passphrase @GPG_PASSPHRASE@  --import HPCCSystems.priv
 rm -rf HPCCSystems.priv
