@@ -73,7 +73,6 @@ sudo yum install -y python3-pip
 sudo pip3 install --upgrade pip3
 
 sudo yum module install -y nodejs/development
-sudo yum install -y mysql-devel
 
 # R 
 sudo yum install -y R-core R-core-devel
