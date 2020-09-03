@@ -4,8 +4,6 @@
     "hpcc_version": "@HPCC_VERSION@",
     "codename": "@CODENAME@",     
     "arch": "@ARCH@",     
-    "aws_access_key": "{{env `ACCESS_KEY`}}",
-    "aws_secret_key": "{{env `SECRET_KEY`}}",
     "aws_region": "@AWS_REGION@",
     "account_id": "{{env `EC2_ACCOUNT_ID`}}",
     "x509_key_path": "{{env `EC2_PRIVATE_KEY`}}",
@@ -16,8 +14,6 @@
   "builders": [{
     "type": "@BUILD_TYPE@",
     "ami_virtualization_type" : "hvm",
-    "access_key": "{{user `aws_access_key`}}",
-    "secret_key": "{{user `aws_secret_key`}}",
     "region": "{{user `aws_region`}}",
     "source_ami": "@BASE_AMI@",
     "account_id": "{{user `account_id`}}",

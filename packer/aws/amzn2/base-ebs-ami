@@ -6,6 +6,7 @@ us-east-1 ami-0323c3dd2da7fb37d
 us-east-2 ami-0f7919c33c90f5b58
 us-west-1 ami-06fcc1f0bc2c8943f
 us-west-2 ami-0d6621c01e8c2de2c
+sa-east-1 ami-081a078e835a9f751
 
 # Go to https://aws.amazon.com/marketplace/pp/B00O7WM7QW to select an ami by region. Need accept term first
 
@@ -17,7 +18,6 @@ eu-central-1
 eu-west-1
 eu-west-2
 eu-west-3
-sa-east-1
 us-east-1
 us-east-2
 us-west-1

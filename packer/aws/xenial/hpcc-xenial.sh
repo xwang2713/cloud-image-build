@@ -47,8 +47,9 @@ sudo apt-get install -y --no-install-recommends \
 
 
 #git libboost-regex1.54.0 libboost-regex-dev libicu52 libicu-dev libxalan-c111 libxerces-c3.1 binutils libldap-2.4-2 libldap2-dev openssl zlib1g g++ openssh-client openssh-server expect libarchive13 rsync lib32z1-dev tofrodos build-essential libfuse-dev libcurl4-openssl-dev libxml2-dev mime-support subversion autoconf libtool libxslt1.1 libxml2 libapr1 libaprutil1 zip libtbb2 libnuma1
-
-if [[ "${HPCC_FULL_VERSION}" > "7.8" ]]
+VER_MAJ=$(echo ${HPCC_FULL_VERSION} | cut -d'.' -f1)
+VER_MIN=$(echo ${HPCC_FULL_VERSION} | cut -d'.' -f2)
+if [ "$VER_MAJ" -ge "7" ] &&  [ "$VER_MIN" -ge "8" ]
 then
 #g++-7
 sudo apt-get install -y software-properties-common

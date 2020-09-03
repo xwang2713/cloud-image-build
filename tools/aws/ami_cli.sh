@@ -14,12 +14,18 @@ ACTION="list"
 
 ACTION=$(echo $ACTION | tr '[:upper:]' '[:lower:]')
 
-#ami_prefix=hpcc-systems
-ami_prefix=hpcc-platform
+# 7.8.x
+ami_prefix=hpcc-systems
+# 7.6.x
+#ami_prefix=hpcc-platform
 ami_prefix2=${ami_prefix}-community
 #ami_prefix2=${ami_prefix}-dev
 
-aws ec2 describe-regions | while read x region opt region2
+# aws version?
+#aws ec2 describe-regions | while read x region opt region2
+
+# aws 1.16.x
+aws ec2 describe-regions | while read x region region2
 do
     
     echo 

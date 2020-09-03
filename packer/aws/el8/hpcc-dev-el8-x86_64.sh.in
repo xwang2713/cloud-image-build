@@ -72,7 +72,7 @@ wget http://repo.okay.com.mx/centos/8/x86_64/release/${V8_DEVEL}
 sudo yum install ${V8} ${V8_DEVEL}
 rm -rf ${V8} ${V8_DEVEL}
 
-sudo yum moduel install python36/build
+sudo yum module install python36/build
 sudo alternatives --set python /usr/bin/python3
 sudo yum install -y python3-pip
 sudo pip3 install --upgrade pip3

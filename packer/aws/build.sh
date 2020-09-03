@@ -97,6 +97,7 @@ dry_run_only=false
 use_subnet=true
 log=
 subnet_file=subnet-ids
+#subnet_file=subnet-ids-ris
 
 # Parse input parameters
 #----------------------------------
