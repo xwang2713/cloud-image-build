@@ -1,0 +1,20 @@
+#Need got https://aws.amazon.com/marketplace/pp?sku=6x5jmcajty9edm3f211pqjfn2 
+#Select region and subscribe. It is free to our build image t2.micro
+#Flowwing is not from Centos.org and shouldn't be used
+#ca-central-1 ami-0d7499af0874fa5c0 Canada
+us-east-2 ami-045b0a05944af45c1 US
+
+#ap-northeast-2
+#ap-south-1
+#ap-southeast-1
+#ap-southeast-2
+#eu-central-1
+#eu-west-1
+#eu-west-2
+#eu-west-3
+#sa-east-1
+#us-east-1
+#us-east-2
+#us-west-1
+#@us-west-2
+#ap-northeast-1  Tokyo

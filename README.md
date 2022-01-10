@@ -78,6 +78,26 @@ Remove AMIs for HPCC version
 * [Hyper-V](/packer/hyper-v)
 * [Virtual Box](/packer/virtual-box)
 
+## Build Development Build
+[AWS](/packer/aws)
+### Build Parameters
+Two new parameters are added to packer/aws/ebs/aws-hpcc-dev-build-vpc.json.in: 1) instance type 2) Storage Device Name. 
+These can be set through top level bin/build-dev.sh "-T" and "-D". Also "volume_size: 20" is added so there will be 20 GB for root volume which is required for CentOS 7 build
 
-Known problem:
-Build fail for Ubuntu 18.04. AWS ticket: https://console.aws.amazon.com/support/cases?region=us-east-1#/5997229071/en
+### CentOS 7
+Since we hard-coded volume_size to 20 (GB) no special settings needed
+
+### CentOS 8 Stream
+Default "t2.micro" will result Rcpp build failed. Use t2.large (-T t2.large) will build OK.
+
+### Ubuntu 16.04
+Need following to build:
+```code
+export SSH_KEYPAIR_NAME=hpcc-build
+export SSH_PRIVATE_KEY_FILE=~/.ssh/hpcc-build
+# instance type m4.2xlarge will be used in our build. Create with default t2.micro will have instance check failure for accessibility
+../cloud-image-build/packer/aws/build-dev.sh -T m4.2xlarge -c xenial -r ca-central-1 -p subnet-ids-ris -P icanspellthis | tee -a build.log 2>&1
+```
+These will will restrict the AMI can only used with type m4.2xlarge with hpcc-build private key for user "ubuntu". This should be OK for our build.
+
+

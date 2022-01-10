@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export codename=xenial
+export codename=hirsute
 export arch=amd64
 export pkgType=deb
 export now=$(date -u +%Y%m%d-%H%M)
@@ -8,9 +8,6 @@ export now=$(date -u +%Y%m%d-%H%M)
 DEBIAN_FRONTEND=noninteractive
 UCF_FORCE_CONFFNEW=true
 export UCF_FORCE_CONFFNEW DEBIAN_FRONTEND
-whoami
-pwd
-ls -l ~/.ssh
 
 echo "wait 180"
 sleep 180
@@ -23,7 +20,7 @@ sudo apt-get update
 
 sleep 10
 
-sudo apt-get install -y unzip
+sudo apt-get install -y unzip dialog apt-utils
 
 echo "Installing HPCC build prerequisites"
 
@@ -34,9 +31,13 @@ sudo apt-get install -y \
                  libfreetype6-dev      \
                  zip                   \
                  make                  \
+                 bison                 \
+                 flex                  \
                  --fix-missing         
 
 sudo apt-get install -y \
+                 python3-dev           \
+                 libgtk2.0-dev         \
                  git                   \
                  build-essential       \
                  binutils-dev          \
@@ -48,11 +49,10 @@ sudo apt-get install -y \
                  --fix-missing         
 
 sudo apt-get install -y \
+                 libcurl4-gnutls-dev   \
                  libboost-regex-dev    \
-                 libssl-dev            \
                  libarchive-dev        \
-                 libv8-dev             \
-                 openjdk-8-jdk         \
+                 default-jdk           \
                  libapr1-dev           \
                  libaprutil1-dev       \
                  libiberty-dev         \
@@ -73,46 +73,11 @@ sudo apt-get install -y \
                  autotools-dev         \
                  automake              \
                  m4                    \
-                 fop                   \
-                 xsltproc              \
-                 libsaxonb-java        \
                  libatlas-base-dev     \
-                 libbsd-dev           \
+                 libbsd-dev            \
+                 libssl-dev            \
                 --fix-missing         
 
-#g++-7
-sudo apt-get install -y software-properties-common
-sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
-sudo apt update
-sudo apt install g++-7 -y
-
-sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 60 \
-                         --slave /usr/bin/g++ g++ /usr/bin/g++-7 
-sudo update-alternatives --config gcc
-gcc --version
-g++ --version
-ls -la /usr/bin/ | grep -oP "[\S]*(gcc|g\+\+)(-[a-z]+)*[\s]" | xargs sudo bash -c 'for link in ${@:1}; do ln -s -f "/usr/bin/${link}-${0}" "/usr/bin/${link}"; done' 7
-
-
-#sudo apt-get install -y python2.7-dev --fix-missing
-#sudo apt-get install -y python3-dev --fix-missing
-sudo apt-get install -y libgtk2.0-dev --fix-missing
-sudo apt-get install -y libcurl4-gnutls-dev --fix-missing
-sudo apt-get install -y bison --fix-missing
-sudo apt-get install -y flex --fix-missing
-
-sudo add-apt-repository ppa:deadsnakes/ppa
-sudo apt-get update
-sudo apt-get install -y python3.6-dev
-# This need re-do in user data when start thee instance
-sudo chmod 666 /etc/profile
-sudo echo "alias python3=\"python3.6\"" >> /etc/profile
-sudo chmod 644 /etc/profile
-source /etc/profile
-python3 --version
-
-#sudo rm -rf /usr/bin/python3
-#sudo ln -s /usr/bin/python3.6 /usr/bin/python3
 
 echo "Installing Nodejs"
 curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
@@ -120,22 +85,21 @@ sudo apt-get install -y nodejs
 
 echo "Installing R"
 sudo apt-get install -y r-base r-cran-rcpp
-export RInside_package=RInside_0.2.14.tar.gz
+export RInside_package=RInside_0.2.15.tar.gz
 wget https://cran.r-project.org/src/contrib/Archive/RInside/${RInside_package}
 sudo R CMD INSTALL ${RInside_package}
 rm -rf ${RInside_package}
 
 echo "Get expected CMake"
-export cmake_version=3.22.1
-export cmake_name=cmake-${cmake_version}-Linux-x86_64
+export cmake_version=3.20.1
+export cmake_name=cmake-${cmake_version}-linux-x86_64
 wget https://github.com/Kitware/CMake/releases/download/v${cmake_version}/${cmake_name}.tar.gz
 tar -zxf ${cmake_name}.tar.gz
 rm -rf ${cmake_name}.tar.gz
 #cd ${cmake_name}
 #./bootstrap
 #make && sudo make install
-#cd ..
-cmake_name=$(echo $cmake_name | tr '[:upper:]' '[:lower:]')
+#cd .
 sudo cp -r ${cmake_name}/* /usr/local/
 rm -rf ${cmake_name}
 
@@ -146,11 +110,11 @@ sudo ln -s /var/lib/jenkins /jenkins
 
 echo "Install AWS Cli"
 curl -O https://bootstrap.pypa.io/get-pip.py
-sudo python3.6 get-pip.py
+sudo python3 get-pip.py
 sudo pip3 install awscli --upgrade
 rm -rf get-pip.py
 
 echo "Import gpg key"
 aws s3 cp s3://@S3_BUCKET@/HPCCSystems.priv .
-gpg --passphrase @GPG_PASSPHRASE@  --import HPCCSystems.priv
+gpg --pinentry-mode=loopback --passphrase @GPG_PASSPHRASE@  --import HPCCSystems.priv
 rm -rf HPCCSystems.priv

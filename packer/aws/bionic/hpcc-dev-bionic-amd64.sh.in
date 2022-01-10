@@ -90,7 +90,7 @@ sudo apt-get install -y bison --fix-missing
 sudo apt-get install -y flex --fix-missing
 
 echo "Installing Nodejs"
-curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
 sudo apt-get install -y nodejs
 
 echo "Installing R"
@@ -101,7 +101,7 @@ sudo R CMD INSTALL ${RInside_package}
 rm -rf ${RInside_package}
 
 echo "Get expected CMake"
-export cmake_version=3.13.1
+export cmake_version=3.22.1
 export cmake_name=cmake-${cmake_version}-Linux-x86_64
 wget https://github.com/Kitware/CMake/releases/download/v${cmake_version}/${cmake_name}.tar.gz
 tar -zxf ${cmake_name}.tar.gz
@@ -110,7 +110,10 @@ rm -rf ${cmake_name}.tar.gz
 #./bootstrap
 #make && sudo make install
 #cd ..
+cmake_name=$(echo $cmake_name | tr '[:upper:]' '[:lower:]')
 sudo cp -r ${cmake_name}/* /usr/local/
+which cmake
+cmake --version
 rm -rf ${cmake_name}
 
 # Setup Jenkins

@@ -10,6 +10,7 @@ usage()
    echo "Usage build.sh -v <HPCC Version> [-r <regsion> | -i <region file>] [options] -c <codename> -P <gpg passphrase>  "
    echo "   -a <value>: arch: amd64 or x86_64"
    echo "   -c <value>: Linux distro codename. For example, xenial, trusty, el7"
+   echo "   -D <value>: Device name. Either sda1 or xvda (for amzn2)"
    echo "   -i <value>: region file. One region per line."
    echo "   -I <value>: IAM Instance profile. The default is hpcc-build"
    echo "   -n no run. Generate build script only."
@@ -19,6 +20,7 @@ usage()
    echo "   -s <value>: file_server."
    echo "   -S <value>: AWS S3 bucket name. The default is hpcc-build-ca-central-1"
    echo "   -t <value>: amazone ec2 type: instance or ebs."
+   echo "   -T <value>: instance type: t2.micro (default), t2 large, etc."
    echo "   -u <value>: Linux user. 'ubuntu' for Ubuntu and 'centos' for CentOS"
    echo ""
    exit 3
@@ -32,6 +34,8 @@ configure_file()
    sed "s|@CODENAME@|${codename}|g; \
         s|@ARCH@|${arch}|g; \
         s|@BUILD_TYPE@|${type2}|g; \
+        s|@DEVICE_NAME@|${device_name}|g; \
+        s|@INSTANCE_TYPE@|${instance_type}|g; \
         s|@SUBNET_ID@|${subnet_id}|g; \
         s|@INSTANCE_PROFILE@|${instance_profile}|g; \
         s|@BASE_AMI@|${base_ami}|g; \
@@ -112,16 +116,19 @@ instance_profile=hpcc-build
 subnet_file=subnet-ids
 s3_bucket_name=hpcc-build-ca-central-1
 log=
-
+device_name=sda1  #/dev/sda1  /dev/xvda
+instance_type=t2.micro
 
 # Parse input parameters
 #----------------------------------
-while getopts "*a:c:d:I:i:np:P:qr:S:s:t:v:u:" arg
+while getopts "*a:c:d:D:I:i:np:P:qr:S:s:t:T:v:u:" arg
 do
     case "$arg" in
        a) arch="$OPTARG"
           ;;
        c) codename="$OPTARG"
+          ;;
+       D) device_name="$OPTARG"
           ;;
        I) instance_profile="$OPTARG"
           ;;
@@ -142,6 +149,8 @@ do
        s) file_server="$OPTARG"
           ;;
        t) type="aws_$OPTARG"
+          ;;
+       T) instance_type="$OPTARG"
           ;;
        u) os_user="$OPTARG"
           ;;

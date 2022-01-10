@@ -17,7 +17,7 @@
     "secret_key": "{{user `aws_secret_key`}}",
     "region": "{{user `aws_region`}}",
     "source_ami": "@BASE_AMI@",
-    "instance_type": "t2.micro",
+    "instance_type": "@INSTANCE_TYPE@",
     "iam_instance_profile" : "@INSTANCE_PROFILE@",
     "ssh_username": "@USER@",
     "subnet_id" : "@SUBNET_ID@",
@@ -34,7 +34,15 @@
       "service": "ec2",
       "support_email": "xiaoming.wang@lexisnexis.com",  
       "application": "hpccsystems"  
-    }
+    },
+    "launch_block_device_mappings": [
+      {
+        "device_name": "/dev/@DEVICE_NAME@",
+	"delete_on_termination" : true,
+	"volume_size" : 20
+       }
+    ]
+
   }],
   "provisioners": [{
         "type": "shell",

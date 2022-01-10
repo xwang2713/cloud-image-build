@@ -78,9 +78,10 @@ echo "Installing Python3"
 #source /opt/rh/rh-python36/enable
 ##scl enable rh-python36 bash
 wget https://www.python.org/ftp/python/3.6.10/Python-3.6.10.tgz
+ls -l ./Python-3.6.10.tgz
 tar -zxvf Python-3.6.10.tgz
 cd Python-3.6.10
-./configure --enable-optimizations --enable-shared
+sudo ./configure --enable-optimizations --enable-shared
 sudo make altinstall
 cd ..
 sudo rm -rf Python*
@@ -89,44 +90,45 @@ sudo /usr/bin/python3
 sudo ln -s /usr/local/bin/python3 /usr/bin/python3
 sudo sh -c 'echo "export LD_LIBRARY_PATH=/usr/local/lib:\${LD_LIBRARY_PATH}" >> /etc/profile'
 
-
 echo "Installing pip3"
 #pip3 is probably already installed:
 #sudo /opt/rh/rh-python36/root/usr/bin/pip3
 sudo yum install -y python3-pip
 
 echo "Installing git"
-wget https://mirrors.edge.kernel.org/pub/software/scm/git/git-2.9.5.tar.gz
+wget --no-check-certificate https://mirrors.edge.kernel.org/pub/software/scm/git/git-2.9.5.tar.gz
+ls -l ./git-2.9.5.tar.gz
 tar -zxvf git-2.9.5.tar.gz
 cd git-2.9.5
-./configure
-make -j4
+sudo ./configure
+sudo make -j4
 sudo make install
 cd ..
 rm -rf git-2.9.5 git-2.9.5.tar.gz
 
 wget http://mysql.mirrors.hoobly.com/Downloads/MySQL-5.6/MySQL-devel-5.6.44-1.el7.x86_64.rpm
 sudo rpm -i MySQL-devel-5.6.44-1.el7.x86_64.rpm
-rm -rf MySQL-devel-5.6.44-1.el7.x86_64.rpm 
+sudo rm -rf MySQL-devel-5.6.44-1.el7.x86_64.rpm 
 
 echo "Installing Nodejs"
-curl --silent --location https://rpm.nodesource.com/setup_12.x | sudo bash -
+curl --silent --location https://rpm.nodesource.com/setup_16.x | sudo bash -
 sudo yum install -y nodejs
 
 echo "Installing R"
 sudo yum install -y R-core-devel
 export Rcpp_package=Rcpp_0.12.19.tar.gz
 wget https://cran.r-project.org/src/contrib/Archive/Rcpp/${Rcpp_package}
+ls -l ${Rcpp_package}
 sudo R CMD INSTALL ${Rcpp_package}
-rm -rf ${Rcpp_package}
+sudo rm -rf ${Rcpp_package}
 
 export RInside_package=RInside_0.2.12.tar.gz
 wget https://cran.r-project.org/src/contrib/Archive/RInside/${RInside_package}
 sudo R CMD INSTALL ${RInside_package}
-rm -rf ${RInside_package}
+sudo rm -rf ${RInside_package}
 
 echo "Get expected CMake"
-export cmake_version=3.13.1
+export cmake_version=3.22.1
 export cmake_name=cmake-${cmake_version}-Linux-x86_64
 wget https://github.com/Kitware/CMake/releases/download/v${cmake_version}/${cmake_name}.tar.gz
 tar -zxf ${cmake_name}.tar.gz
@@ -135,8 +137,9 @@ rm -rf ${cmake_name}.tar.gz
 #./bootstrap
 #make && sudo make install
 #cd ..
+cmake_name=$(echo $cmake_name | tr '[:upper:]' '[:lower:]')
 sudo cp -r ${cmake_name}/* /usr/local/
-rm -rf ${cmake_name}
+sudo rm -rf ${cmake_name}
 
 # Setup Jenkins
 sudo mkdir -p /var/lib/jenkins/workspace
@@ -144,19 +147,21 @@ sudo chown -R centos:centos /var/lib/jenkins
 sudo ln -s /var/lib/jenkins /jenkins
 
 echo "Install AWS Cli"
-#sudo /opt/rh/rh-python36/root/usr/bin/pip3 install awscli --upgrade
-#sudo pip3 install awscli --upgrade
-sudo python3 -m pip install awscli --upgrade
+#sudo python3 -m pip install awscli --upgrade
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
 
-echo "Install devtoolset-2"
-wget http://people.centos.org/tru/devtools-2/devtools-2.repo -O /etc/yum.repos.d/devtools-2.repo
-sudo yum install -y devtoolset-2-gcc devtoolset-2-binutils
-sudo yum install -y devtoolset-2-gcc-gfortran devtoolset-2-gcc-c++
-sudo yum install -y devtoolset-2-libatomic-devel devtoolset-2-gdb devtoolset-2-git devtoolset-2-gitk
-sudo yum install -y  devtoolset-2-valgrind devtoolset-2-elfutils devtoolset-2-strace devtoolset-2-git-gui
+#echo "Install devtoolset-2"
+#sudo wget http://people.centos.org/tru/devtools-2/devtools-2.repo -O /etc/yum.repos.d/devtools-2.repo
+#sudo yum install -y devtoolset-2-gcc devtoolset-2-binutils
+#sudo yum install -y devtoolset-2-gcc-gfortran devtoolset-2-gcc-c++
+#sudo yum install -y devtoolset-2-libatomic-devel devtoolset-2-gdb devtoolset-2-git devtoolset-2-gitk
+#sudo yum install -y  devtoolset-2-valgrind devtoolset-2-elfutils devtoolset-2-strace devtoolset-2-git-gui
 
 
 echo "Import gpg key"
 aws s3 cp s3://@S3_BUCKET@/HPCCSystems.priv .
+ls -l ./HPCCSystems.priv
 gpg --passphrase @GPG_PASSPHRASE@  --import HPCCSystems.priv
 rm -rf HPCCSystems.priv

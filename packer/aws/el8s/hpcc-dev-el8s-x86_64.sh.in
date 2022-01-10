@@ -1,0 +1,150 @@
+#!/bin/bash
+
+function install_additional_packages
+{
+  for package in $1
+  do
+    echo "Download $package"
+    wget http://mirror.centos.org/centos/8-stream/PowerTools/x86_64/os/Packages/${package}
+    echo "Install $package"
+    sudo yum install -y ${package}
+    rm -rf ${package}
+  done
+}
+
+export codename=el8s
+export arch=amd64
+export pkgType=rpm
+export now=$(date -u +%Y%m%d-%H%M)
+
+echo "wait 180"
+sleep 180
+echo "done waiting"
+
+sudo yum update -y
+
+sleep 10
+
+sudo yum install -y unzip
+
+echo "Installing HPCC build prerequisites"
+
+sudo yum install -y \
+                 epel-release          \
+                 wget                  \
+                 git                   \
+                 gcc                   \
+                 gcc-c++               \
+                 automake              \
+                 m4                    \
+                 make                  \
+                 bison                 \
+                 flex                  \
+                 binutils-devel        \
+                 openldap-devel        \
+                 libicu-devel          \
+                 libxslt-devel         \
+                 libarchive            \
+                 boost-devel           \
+                 openssl-devel         \
+                 apr-devel             \
+                 apr-util-devel
+
+#LIBARCHIVE_DEVEL=libarchive-devel-3.3.2-7.el8.x86_64.rpm
+#wget http://mirror.centos.org/centos/8/PowerTools/x86_64/os/Packages/${LIBARCHIVE_DEVEL}
+#sudo yum install ${LIBARCHIVE_DEVEL}
+#rm -rf ${LIBARCHIVE_DEVEL}
+install_additional_packages "libarchive-devel-3.3.3-1.el8.x86_64.rpm"
+
+sudo yum install -y \
+                 hiredis-devel         \
+                 numactl-devel         \
+                 libevent-devel        \
+                 java-11-openjdk-devel \
+                 sqlite-devel          \
+                 tbb-devel             \
+                 rpm-build             \
+                 curl-devel            \
+                 gtk2-devel            \
+                 freetype-devel        \
+                 zip                   \
+                 libtool               \
+                 libbsd-devel          \
+		 cmake                 \
+                 mysql-devel
+
+#sudo yum install -y libmemcached-devel
+install_additional_packages "libmemcached-devel-1.0.18-17.el8.x86_64.rpm"
+
+#V8=v8-6.7.17-8.el8.x86_64.rpm 
+#V8_DEVEL=v8-devel-6.7.17-8.el8.x86_64.rpm
+#wget http://repo.okay.com.mx/centos/8/x86_64/release/${V8}
+#wget http://repo.okay.com.mx/centos/8/x86_64/release/${V8_DEVEL}
+#sudo yum install ${V8} ${V8_DEVEL}
+#rm -rf ${V8} ${V8_DEVEL}
+
+sudo yum module install -y python39/build --allowerasing
+#sudo yum module install python36/build
+sudo alternatives --set python /usr/bin/python3
+sudo yum install -y python3-pip
+sudo pip3 install --upgrade pip3
+sudo dnf module reset nodejs
+sudo dnf module install -y nodejs:16/development
+sudo yum install -y mysql-devel
+
+# R
+sudo yum module install perl:5.26
+
+openblas_packages="perl-Unicode-EastAsianWidth-1.33-13.el8.noarch.rpm texinfo-6.5-6.el8.x86_64.rpm texinfo-tex-6.5-6.el8.x86_64.rpm openblas-openmp-0.3.15-1.el8.x86_64.rpm openblas-openmp64-0.3.15-1.el8.x86_64.rpm openblas-openmp64_-0.3.15-1.el8.x86_64.rpm openblas-serial64-0.3.15-1.el8.x86_64.rpm openblas-serial64_-0.3.15-1.el8.x86_64.rpm openblas-threads64-0.3.15-1.el8.x86_64.rpm openblas-threads64_-0.3.15-1.el8.x86_64.rpm openblas-devel-0.3.15-1.el8.x86_64.rpm"
+install_additional_packages "$openblas_packages"
+
+sudo yum install -y R-core R-core-devel
+
+echo "df -k"
+df -k 
+
+R_packages="Rcpp_1.0.7.tar.gz RInside_0.2.16.tar.gz"
+for package in ${R_packages}
+do
+  wget https://cran.r-project.org/src/contrib/${package}
+  # If the following cause connection dropped.
+  # So we only download them and will install them during VM start
+  echo "sudo R CMD INSTALL ${package}"
+  sudo R CMD INSTALL ${package}
+  rm -rf ${package}
+done
+echo "Rcpp and Rinside packages: "
+pwd
+ls
+
+echo "Maven"
+MAVEN=apache-maven-3.6.3
+wget http://apache.mirrors.hoobly.com/maven/maven-3/3.6.3/binaries/${MAVEN}-bin.tar.gz
+sudo tar -zxvf ${MAVEN}-bin.tar.gz -C /usr/local
+
+sudo ln -s /usr/local/${MAVEN}/usr/local/maven
+sudo echo "export MAVEN_HOME=/usr/local/maven" >> /etc/profile
+sudo echo "export PATH=${MAVEN_HOME}/bin:$PATH" >> /etc/profile
+rm -rf ${MAVEN}-bin.tar.gz
+
+sudo yum install -y atlas-devel           
+
+# Additional packages
+additional_packages="cppunit-1.14.0-4.el8.x86_64.rpm cppunit-devel-1.14.0-4.el8.x86_64.rpm"
+install_additional_packages "$additional_packages"
+
+# Setup Jenkins
+sudo mkdir -p /var/lib/jenkins/workspace
+sudo chown -R centos:centos /var/lib/jenkins
+sudo ln -s /var/lib/jenkins /jenkins
+
+echo "Install AWS Cli"
+sudo pip3 install awscli --upgrade
+
+echo "Import gpg key"
+aws s3 cp s3://@S3_BUCKET@/HPCCSystems.priv .
+gpg  --pinentry-mode=loopback --passphrase @GPG_PASSPHRASE@  --import HPCCSystems.priv
+rm -rf HPCCSystems.priv
+
+echo "df -k"
+df -k 

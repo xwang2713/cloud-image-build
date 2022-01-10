@@ -1,3 +1,4 @@
 #20190514
 ap-northeast-1 ami-06d9ad3f86032262d Tokyo
-ca-central-1 ami-0eb3e12d3927c36ef Canada
+#ca-central-1    ami-0eb3e12d3927c36ef Canada
+ca-central-1 ami-03bcd79f25ca6b127 Canada
