@@ -80,6 +80,9 @@ Remove AMIs for HPCC version
 
 ## Build Development Build
 [AWS](/packer/aws)
+To build make directory in the parent of this repo. Copy packer/aws/bin/build-dev.sh to it and run ./build-dev.sh from the directory.
+
+
 ### Build Parameters
 Two new parameters are added to packer/aws/ebs/aws-hpcc-dev-build-vpc.json.in: 1) instance type 2) Storage Device Name. 
 These can be set through top level bin/build-dev.sh "-T" and "-D". Also "volume_size: 20" is added so there will be 20 GB for root volume which is required for CentOS 7 build
