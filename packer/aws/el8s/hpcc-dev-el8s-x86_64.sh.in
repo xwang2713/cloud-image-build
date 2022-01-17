@@ -93,7 +93,7 @@ sudo dnf module install -y nodejs:16/development
 sudo yum install -y mysql-devel
 
 # R
-sudo yum module install perl:5.26
+sudo yum module install -y perl:5.26
 
 openblas_packages="perl-Unicode-EastAsianWidth-1.33-13.el8.noarch.rpm texinfo-6.5-6.el8.x86_64.rpm texinfo-tex-6.5-6.el8.x86_64.rpm openblas-openmp-0.3.15-1.el8.x86_64.rpm openblas-openmp64-0.3.15-1.el8.x86_64.rpm openblas-openmp64_-0.3.15-1.el8.x86_64.rpm openblas-serial64-0.3.15-1.el8.x86_64.rpm openblas-serial64_-0.3.15-1.el8.x86_64.rpm openblas-threads64-0.3.15-1.el8.x86_64.rpm openblas-threads64_-0.3.15-1.el8.x86_64.rpm openblas-devel-0.3.15-1.el8.x86_64.rpm"
 install_additional_packages "$openblas_packages"
