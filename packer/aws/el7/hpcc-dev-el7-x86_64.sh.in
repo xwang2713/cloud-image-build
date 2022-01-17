@@ -86,7 +86,7 @@ sudo make altinstall
 cd ..
 sudo rm -rf Python*
 sudo ln -s /usr/local/bin/python3.6 /usr/local/bin/python3
-sudo /usr/bin/python3
+sudo /usr/bin/python3 --version
 sudo ln -s /usr/local/bin/python3 /usr/bin/python3
 sudo sh -c 'echo "export LD_LIBRARY_PATH=/usr/local/lib:\${LD_LIBRARY_PATH}" >> /etc/profile'
 
