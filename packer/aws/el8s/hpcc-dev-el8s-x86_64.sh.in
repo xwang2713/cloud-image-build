@@ -50,10 +50,6 @@ sudo yum install -y \
                  apr-devel             \
                  apr-util-devel
 
-#LIBARCHIVE_DEVEL=libarchive-devel-3.3.2-7.el8.x86_64.rpm
-#wget http://mirror.centos.org/centos/8/PowerTools/x86_64/os/Packages/${LIBARCHIVE_DEVEL}
-#sudo yum install ${LIBARCHIVE_DEVEL}
-#rm -rf ${LIBARCHIVE_DEVEL}
 install_additional_packages "libarchive-devel-3.3.3-1.el8.x86_64.rpm"
 
 sudo yum install -y \
@@ -72,6 +68,17 @@ sudo yum install -y \
                  libbsd-devel          \
 		 cmake                 \
                  mysql-devel
+
+echo "Get expected CMake"
+export cmake_version=3.22.1
+export cmake_name=cmake-${cmake_version}-Linux-x86_64
+wget https://github.com/Kitware/CMake/releases/download/v${cmake_version}/${cmake_name}.tar.gz
+tar -zxf ${cmake_name}.tar.gz
+rm -rf ${cmake_name}.tar.gz
+cmake_name=$(echo $cmake_name | tr '[:upper:]' '[:lower:]')
+sudo cp -r ${cmake_name}/* /usr/local/
+sudo rm -rf ${cmake_name}
+
 
 #sudo yum install -y libmemcached-devel
 install_additional_packages "libmemcached-devel-1.0.18-17.el8.x86_64.rpm"
@@ -100,13 +107,20 @@ install_additional_packages "$openblas_packages"
 
 sudo yum install -y R-core R-core-devel
 
-echo "df -k"
-df -k 
-
-R_packages="Rcpp_1.0.7.tar.gz RInside_0.2.16.tar.gz"
-for package in ${R_packages}
+R_packages="Rcpp/Rcpp_1.0.7.tar.gz RInside_0.2.16.tar.gz"
+for package_path in ${R_packages}
 do
-  wget https://cran.r-project.org/src/contrib/${package}
+  echo $package_path | grep -q "/"
+  if [ $? -eq 0 ]
+  then
+    pkg_dir=$(echo $package_path | cut -d '/' -f 1)
+    package=$(echo $package_path | cut -d '/' -f 2)
+    wget https://cran.r-project.org/src/contrib/00Archive/${pkg_dir}/${package}
+  else
+    package=$package_path
+    wget https://cran.r-project.org/src/contrib/${package}
+  fi
+
   # If the following cause connection dropped.
   # So we only download them and will install them during VM start
   echo "sudo R CMD INSTALL ${package}"
@@ -122,9 +136,11 @@ MAVEN=apache-maven-3.6.3
 wget http://apache.mirrors.hoobly.com/maven/maven-3/3.6.3/binaries/${MAVEN}-bin.tar.gz
 sudo tar -zxvf ${MAVEN}-bin.tar.gz -C /usr/local
 
-sudo ln -s /usr/local/${MAVEN}/usr/local/maven
+sudo ln -s /usr/local/${MAVEN} /usr/local/maven
+sudo chmod 777 /etc/profile
 sudo echo "export MAVEN_HOME=/usr/local/maven" >> /etc/profile
-sudo echo "export PATH=${MAVEN_HOME}/bin:$PATH" >> /etc/profile
+sudo echo "export PATH=\${MAVEN_HOME}/bin:\$PATH" >> /etc/profile
+sudo chmod 644 /etc/profile
 rm -rf ${MAVEN}-bin.tar.gz
 
 sudo yum install -y atlas-devel           
@@ -145,6 +161,3 @@ echo "Import gpg key"
 aws s3 cp s3://@S3_BUCKET@/HPCCSystems.priv .
 gpg  --pinentry-mode=loopback --passphrase @GPG_PASSPHRASE@  --import HPCCSystems.priv
 rm -rf HPCCSystems.priv
-
-echo "df -k"
-df -k 
