@@ -22,7 +22,7 @@ param(
     $ubuntu_passwd="hpccdemo",
     $output_dir="hpcc-vm",
     $base_dir="hpcc-base-vm",
-    $url_prefix = "http://10.240.32.242/builds/",
+    $url_prefix = "http://10.224.20.10/builds/",
     $download_dir="hpcc-systems/bionic",
     $configuration_version="8.0",
     $switch="External"

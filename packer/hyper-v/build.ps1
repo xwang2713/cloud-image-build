@@ -19,7 +19,7 @@ param(
 )
 
 $script_directory  = split-path $myInvocation.MyCommand.path
-../cloud-image-build/packer/hyper-v/create-hpccvm.ps1 -version $version -url_prefix http://10.240.32.242/builds/
+../cloud-image-build/packer/hyper-v/create-hpccvm.ps1 -version $version -url_prefix http://10.224.20.10/builds/
 if ( ! ($?) ) { exit 1}
 
 packer build hyperv.json

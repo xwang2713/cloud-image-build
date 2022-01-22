@@ -1,5 +1,17 @@
 #!/bin/bash
 
+function install_additional_packages
+{
+  for package in $1
+  do
+    echo "Download $package"
+    wget http://mirror.centos.org/centos/8-stream/PowerTools/x86_64/os/Packages/${package}
+    echo "Install $package"
+    sudo yum install -y ${package}
+    rm -rf ${package}
+  done
+}
+
 export codename=el8
 export arch=amd64
 export pkgType=rpm
@@ -38,10 +50,7 @@ sudo yum install -y \
                  apr-devel             \
                  apr-util-devel
 
-LIBARCHIVE_DEVEL=libarchive-devel-3.3.2-7.el8.x86_64.rpm
-wget http://mirror.centos.org/centos/8/PowerTools/x86_64/os/Packages/${LIBARCHIVE_DEVEL}
-sudo yum install ${LIBARCHIVE_DEVEL}
-rm -rf ${LIBARCHIVE_DEVEL}
+install_additional_packages "libarchive-devel-3.3.3-1.el8.x86_64.rpm"
 
 sudo yum install -y \
                  hiredis-devel         \
@@ -60,10 +69,7 @@ sudo yum install -y \
                  libbsd-devel          \
                  mysql-devel
 
-LIBMEMCACHED_DEVEL=libmemcached-devel-1.0.18-15.el8.x86_64.rpm
-wget http://mirror.centos.org/centos/8/PowerTools/x86_64/os/Packages/${LIBMEMCACHED_DEVEL}
-sudo yum install ${LIBMEMCACHED_DEVEL}
-rm -rf ${LIBMEMCACHED_DEVEL}
+install_additional_packages "libmemcached-devel-1.0.18-17.el8.x86_64.rpm"
 
 V8=v8-6.7.17-8.el8.x86_64.rpm 
 V8_DEVEL=v8-devel-6.7.17-8.el8.x86_64.rpm
