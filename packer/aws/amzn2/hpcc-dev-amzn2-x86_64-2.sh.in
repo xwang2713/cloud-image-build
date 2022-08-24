@@ -1,0 +1,163 @@
+#!/bin/bash
+
+export codename=amzn2
+export arch=x86_64
+export pkgType=rpm
+export now=$(date -u +%Y%m%d-%H%M)
+
+echo "wait 180"
+sleep 180
+echo "done waiting"
+
+sudo yum update
+sudo amazon-linux-extras install -y epel
+sleep 10
+
+sudo yum install -y unzip
+
+echo "Installing HPCC build prerequisites"
+
+sudo yum install -y \
+                 wget                  \
+                 rpm-build             \
+                 gcc                   \
+                 gcc-c++               \
+                 libcurl-devel         \
+                 freetype-devel        \
+                 zip                   \
+                 git                   \
+                 make                  
+
+sudo yum install -y \
+                 bison                 \
+                 flex                  \
+                 binutils-devel        \
+                 openldap-devel        \
+                 cppunit-devel         \
+                 libicu-devel          \
+                 libuuid-devel          \
+                 libxslt-devel        
+
+sudo yum install -y \
+                 boost-devel           \
+                 openssl-devel         \
+                 libarchive-devel      \
+                 v8-devel              \
+                 java-11-openjdk-devel \
+                 apr-devel             \
+                 apr-util-devel        \
+                 hiredis-devel         \
+                 tbb-devel             \
+                 numactl-devel         \
+                 libevent-devel        \
+                 sqlite-devel          \
+                 libmemcached-devel    \
+		 ncurses-devel \
+                 memcached-devel       
+
+sudo yum install -y \
+                 libtool               \
+                 libuv                 \
+                 automake              \
+                 make                  \
+                 m4                    \
+                 gtk2-devel            \
+                 atlas-devel           
+
+sudo yum install -y \
+                 python-devel          \
+                 gnutls                \
+                 libbsd-devel          \
+                 perl-ExtUtils-MakeMaker
+
+echo "g++ version:"
+g++ --version
+exit 0
+echo "Install devtoolset-9"
+sudo yum install -y centos-release-scl
+sudo yum install -y devtoolset-9
+
+ls -l /opt/rh/devtoolset-9/enable
+source /opt/rh/devtoolset-9/enable
+g++ --version
+
+wget https://pkg-config.freedesktop.org/releases/pkg-config-0.29.2.tar.gz
+tar xvfz pkg-config-0.29.2.tar.gz
+cd pkg-config-0.29.2
+./configure --prefix=/usr/local/pkg_config/0_29_2 --with-internal-glib
+make -j4
+sudo make install
+sudo ln -s /usr/local/pkg_config/0_29_2/bin/pkg-config /usr/local/bin/
+sudo mkdir -p /usr/local/share/aclocal
+sudo ln -s /usr/local/pkg_config/0_29_2/share/aclocal/pkg.m4 /usr/local/share/aclocal/
+sudo sh -c 'echo "export LD_LIBRARY_PATH=/usr/local/lib:${LD_LIBRARY_PATH}" >> /etc/profile'
+sudo sh -c 'echo "export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:${PKG_CONFIG_PATH}" >> /etc/profile'
+sudo sh -c 'echo "export ACLOCAL_PATH=/usr/local/share/aclocal:${ACLOCAL_PATH}" >> /etc/profile'
+
+echo "Installing Python3"
+wget https://www.python.org/ftp/python/3.9.13/Python-3.9.13.tgz
+tar -zxvf Python-3.9.13.tgz
+cd Python-3.9.13
+./configure --enable-optimizations --enable-shared
+sudo make altinstall
+cd ..
+sudo rm -rf Python*
+sudo ln -s /usr/local/bin/python3.9 /usr/local/bin/python3
+sudo /usr/bin/python3
+sudo ln -s /usr/local/bin/python3 /usr/bin/python3
+sudo sh -c 'echo "export LD_LIBRARY_PATH=/usr/local/lib:\${LD_LIBRARY_PATH}" >> /etc/profile'
+
+ "Installing pip3"
+#pip3 is probably already installed:
+#sudo /opt/rh/rh-python36/root/usr/bin/pip3
+sudo yum install -y python3-pip
+
+
+wget http://mysql.mirrors.hoobly.com/Downloads/MySQL-5.6/MySQL-devel-5.6.44-1.el7.x86_64.rpm
+sudo yum install -y MySQL-devel-5.6.44-1.el7.x86_64.rpm
+rm -rf MySQL-devel-5.6.44-1.el7.x86_64.rpm 
+
+echo "Installing Nodejs"
+curl --silent --location https://rpm.nodesource.com/setup_16.x | sudo bash -
+sudo yum install -y nodejs
+
+echo "Installing R"
+sudo yum install -y R-core-devel
+export Rcpp_package=Rcpp_0.12.19.tar.gz
+wget https://cran.r-project.org/src/contrib/Archive/Rcpp/${Rcpp_package}
+sudo R CMD INSTALL ${Rcpp_package}
+rm -rf ${Rcpp_package}
+
+export RInside_package=RInside_0.2.12.tar.gz
+wget https://cran.r-project.org/src/contrib/Archive/RInside/${RInside_package}
+sudo R CMD INSTALL ${RInside_package}
+rm -rf ${RInside_package}
+
+#sudo yum install -y cmake3
+#sudo ln -s /usr/bin/cmake3 /usr/bin/cmake
+echo "Get expected CMake"
+export cmake_version=3.23.2
+export cmake_name=cmake-${cmake_version}-Linux-x86_64
+wget https://github.com/Kitware/CMake/releases/download/v${cmake_version}/${cmake_name}.tar.gz
+tar -zxf ${cmake_name}.tar.gz
+rm -rf ${cmake_name}.tar.gz
+
+cmake_name=$(echo $cmake_name | tr '[:upper:]' '[:lower:]')
+sudo cp -r ${cmake_name}/* /usr/local/
+rm -rf ${cmake_name}
+
+# Setup Jenkins
+sudo mkdir -p /var/lib/jenkins/workspace
+sudo chown -R ec2-user:ec2-user /var/lib/jenkins
+sudo ln -s /var/lib/jenkins /jenkins
+
+echo "Install AWS Cli"
+#sudo /opt/rh/rh-python36/root/usr/bin/pip3 install awscli --upgrade
+#sudo pip3 install awscli --upgrade
+sudo pip3 install awscli --upgrade
+
+
+echo "Import gpg key"
+aws s3 cp s3://@S3_BUCKET@/HPCCSystems.priv .
+gpg --passphrase @GPG_PASSPHRASE@  --import HPCCSystems.priv
+rm -rf HPCCSystems.priv

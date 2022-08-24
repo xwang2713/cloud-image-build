@@ -5,17 +5,18 @@ ap-northeast-1
 ca-central-1 ami-0bae7412735610274 Canada
 
 
-ap-northeast-2
-ap-south-1
-ap-southeast-1
-ap-southeast-2
+#ap-northeast-2
+#ap-south-1
+#ap-southeast-1
+#ap-southeast-2
 eu-west-1 ami-0ffea00000f287d30
-eu-west-2
-eu-west-3
+#eu-west-2
+#eu-west-3
 
 sa-east-1 ami-081a078e835a9f751
 
-us-east-1 ami-0323c3dd2da7fb37d
+#us-east-1 ami-0323c3dd2da7fb37d
+us-east-1 ami-040d909ea4e56f8f3
 us-east-2 ami-0f7919c33c90f5b58
 us-west-1 ami-06fcc1f0bc2c8943f
 us-west-2 ami-0d6621c01e8c2de2c

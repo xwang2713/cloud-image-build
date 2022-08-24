@@ -1,0 +1,102 @@
+#!/bin/bash
+
+export codename=jammy
+export arch=amd64
+export pkgType=deb
+export now=$(date -u +%Y%m%d-%H%M)
+
+DEBIAN_FRONTEND=noninteractive
+UCF_FORCE_CONFFNEW=true
+export UCF_FORCE_CONFFNEW DEBIAN_FRONTEND
+
+echo "wait 180"
+sleep 180
+echo "done waiting"
+
+#sudo apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" dist-upgrade
+sudo  rm -rf /var/lib/apt/lists/*
+sudo apt-get clean
+sudo apt-get update -y
+
+
+echo "Installing HPCC build prerequisites"
+
+
+sudo apt-get install -y \
+                 bison                 \
+                 flex                  \
+                 build-essential       \
+                 binutils-dev          \
+                 curl                  \
+                 lsb-release           \
+                 libldap2-dev          \
+                 libcppunit-dev        \
+                 libicu-dev            \
+                 libxslt1-dev          \
+                 zlib1g-dev            \
+                 libboost-regex-dev    \
+                 libarchive-dev        \
+                 python3-dev           \
+                 default-jdk           \
+                 libapr1-dev           \
+                 libaprutil1-dev       \
+                 libiberty-dev         \
+                 libhiredis-dev        \
+                 libtbb-dev            \
+                 libxalan-c-dev        \
+                 libnuma-dev           \
+                 libevent-dev          \
+                 libatlas-base-dev     \
+                 libblas-dev     \
+                 default-libmysqlclient-dev    \
+                 libsqlite3-dev        \
+                 r-base \
+                 r-cran-rcpp \
+                 r-cran-rinside \
+                 r-cran-inline \
+                 libmemcached-dev      \
+                 pkg-config            \
+                 libtool               \
+                 autotools-dev         \
+                 automake              \
+                 libssl-dev            \
+                 git                   \
+                 libcurl4-openssl-dev  \
+                 cmake                 \
+                 fop                   \
+                 xsltproc              \
+                 libsaxonb-java        \
+                 libbsd-dev            \
+                --fix-missing         
+
+#            libgtk2.0-dev         \
+#            libfreetype6-dev      \
+#                 zip                   \
+#                 unzip   \
+
+echo "Installing Nodejs"
+sudo apt --fix-broken install -y
+sudo apt update -y
+sudo apt remove -y nodejs 
+sudo apt remove -y nodejs-doc 
+#sudo apt remove -y libnode-dev
+curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+sudo apt-get install -y nodejs
+echo "Check npm ..."
+which npm
+
+# Setup Jenkins
+sudo mkdir -p /var/lib/jenkins/workspace
+sudo chown -R ubuntu:ubuntu /var/lib/jenkins
+sudo ln -s /var/lib/jenkins /jenkins
+
+echo "Install AWS Cli"
+curl -O https://bootstrap.pypa.io/get-pip.py
+sudo python3 get-pip.py
+sudo pip3 install awscli --upgrade
+rm -rf get-pip.py
+
+echo "Import gpg key"
+aws s3 cp s3://@S3_BUCKET@/HPCCSystems.priv .
+gpg --pinentry-mode=loopback --passphrase @GPG_PASSPHRASE@  --import HPCCSystems.priv
+rm -rf HPCCSystems.priv

@@ -14,7 +14,9 @@ eu-west-1 ami-6e28b517
 eu-west-2 ami-ee6a718a
 eu-west-3 ami-bfff49c2
 sa-east-1 ami-f9adef95
-us-east-1 ami-4bf3d731
+#us-east-1 ami-4bf3d731
+us-east-1 ami-00e87074e52e6c9f9
+#us-east-1 ami-0affd4508a5d2481b
 us-east-2 ami-e1496384
 us-west-1 ami-65e0e305
 us-west-2 ami-a042f4d8

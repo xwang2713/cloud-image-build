@@ -182,7 +182,8 @@ CentOS Linux 7
 
 us-east-1
 
-ami-4bf3d731
+#ami-4bf3d731
+ami-00e87074e52e6c9f9
 
 x86_64
 

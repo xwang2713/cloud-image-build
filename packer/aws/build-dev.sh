@@ -11,6 +11,8 @@ usage()
    echo "   -a <value>: arch: amd64 or x86_64"
    echo "   -c <value>: Linux distro codename. For example, xenial, trusty, el7"
    echo "   -D <value>: Device name. Either sda1 or xvda (for amzn2)"
+   echo "   -f <value>: provision script flag. Default is empty string. If not empy the script will be in format:"
+   echo "               hpcc-dev-${codename}-${arch}-<flag value>.sh.in"
    echo "   -i <value>: region file. One region per line."
    echo "   -I <value>: IAM Instance profile. The default is hpcc-build"
    echo "   -n no run. Generate build script only."
@@ -34,12 +36,14 @@ configure_file()
    sed "s|@CODENAME@|${codename}|g; \
         s|@ARCH@|${arch}|g; \
         s|@BUILD_TYPE@|${type2}|g; \
+        s|@PROVISION_SCRIPT@|${provision_script}|g; \
         s|@DEVICE_NAME@|${device_name}|g; \
         s|@INSTANCE_TYPE@|${instance_type}|g; \
         s|@SUBNET_ID@|${subnet_id}|g; \
         s|@INSTANCE_PROFILE@|${instance_profile}|g; \
         s|@BASE_AMI@|${base_ami}|g; \
         s|@USER@|${os_user}|g; \
+        s|@AMI_NAME@|${ami_name}|g; \
         s|@AWS_REGION@|${region}|g"   < ${build_script_in} > ${build_script}
 }
 
@@ -118,10 +122,12 @@ s3_bucket_name=hpcc-build-ca-central-1
 log=
 device_name=sda1  #/dev/sda1  /dev/xvda
 instance_type=t2.micro
+script_flag=
+ami_name=
 
 # Parse input parameters
 #----------------------------------
-while getopts "*a:c:d:D:I:i:np:P:qr:S:s:t:T:v:u:" arg
+while getopts "*a:c:d:D:f:I:i:np:P:qr:S:s:t:T:v:u:" arg
 do
     case "$arg" in
        a) arch="$OPTARG"
@@ -130,6 +136,8 @@ do
           ;;
        D) device_name="$OPTARG"
           ;;
+       f) script_flag="$OPTARG"
+	  ;;
        I) instance_profile="$OPTARG"
           ;;
        i) region_file="$OPTARG"
@@ -203,7 +211,11 @@ ami_list="ami_dev_${type}_${arch}"
 
 type2="amazon-$type"
 provision_script="hpcc-dev-${codename}-${arch}.sh"
+[ -n "${script_flag}" ] && provision_script="hpcc-dev-${codename}-${arch}-${script_flag}.sh"
 cp ${wk_dir}/${codename}/${provision_script}.in .
+
+ami_name="hpcc-systems-dev-${codename}-${arch}"
+[ -n "${script_flag}" ] && ami_name="hpcc-systems-dev-${codename}-${arch}-${script_flag}"
 
 configure_provision
 

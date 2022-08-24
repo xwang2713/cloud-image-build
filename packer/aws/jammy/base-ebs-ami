@@ -1,0 +1,8 @@
+# https://cloud-images.ubuntu.com/locator/ec2/
+#               ami-0febea13e0218b5e6 Tokyo
+#               Use Ubuntu 21.10 for testing. Ubuntu 22.04 is not available yet
+#ca-central-1 ami-0b54b776b4b772f58 Canada                                                                                                                                                                                                       #ami-0415d78dfbf98bc5e
+
+# These are  correct AMIs for Ubuntu 22.04
+us-east-1 ami-0a24ce26f4e187f9a
+ca-central-1 ami-09aab0eea28b78caa
