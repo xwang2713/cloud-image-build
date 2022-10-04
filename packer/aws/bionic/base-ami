@@ -2,7 +2,10 @@
 # https://cloud-images.ubuntu.com/locator/ec2/
 # select 0627.1 images
 
-us-east-1 ami-05eeafbc1fd393e9b N.Virginia
+# ami from https://cloud-images.ubuntu.com/locator/ec2/ can be initialized in EC2
+us-east-1 ami-04fc00d791d804b24 N.Virginia
+# Following ami is from EC2 region us-east-1
+#us-east-1 ami-0ee23bfc74a881de5 N.Virginia
 
 us-east-2 ami-00f26cd9381652bcb Ohio
 us-west-1 ami-0cf785c2a9dc71092 N.California

@@ -32,33 +32,42 @@ echo "Build Tools  ---"
 sudo apt install -y git curl zip unzip tar
 sudo apt install -y build-essential \
          autoconf         \
-	 libtool          \
+         libtool          \
          gettext          \
          gcc-11-locales   \
          debian-keyring   \
-	 g++-multilib     \
-	 g++-11-multilib  \
+         g++-multilib     \
+         g++-11-multilib  \
          gcc-multilib     \
          gcc-11-multilib  \
          flex             \
-         bison 
+         bison            \
+         --fix-missing
 
 echo "Libraries  ---"
-sudo apt install -y libncurses-dev \
-	        default-jdk \
-		cmake  \
-		python3-dev \
-		libpython3-dev \
-     	        default-libmysqlclient-dev    \
-                libsqlite3-dev        \
-		libmemcached-dev      \
-		libnuma-dev           \
-                r-base \
-                r-cran-rcpp \
-                r-cran-rinside \
-                r-cran-inline \
-		libbsd-dev       \
-		uuid-dev
+sudo apt install -y libncurses-dev     \
+         default-jdk                   \
+         cmake                         \
+         python3-dev                   \
+         libpython3-dev                \
+         default-libmysqlclient-dev    \
+         libsqlite3-dev                \
+         libmemcached-dev              \
+         libnuma-dev                   \
+         r-base                        \
+         r-cran-rcpp                   \
+         r-cran-rinside                \
+         r-cran-inline                 \
+         libbsd-dev                    \
+         uuid-dev                      \
+         --fix-missing
+
+sudo apt install -y  bcurl4-openssl-dev \
+                libevent-dev            \
+                fop                     \
+                xsltproc                \
+                libsaxonb-java          \
+                --fix-missing
 
 dpkg -l | grep bsd
 dpkg -l | grep uuid

@@ -27,7 +27,7 @@ which mono
 mono --version
 
 
-sudo yum install -y git curl zip unzip wget
+sudo yum install -y git curl zip unzip wget 
 #sudo yum install -y gcc10.x86_64 gcc10-c++.x86_64 
 #gcc --version
 echo "Install devtoolset-9"
@@ -58,8 +58,34 @@ sudo sh -c 'echo "export LD_LIBRARY_PATH=/usr/local/lib:${LD_LIBRARY_PATH}" >> /
 sudo sh -c 'echo "export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:${PKG_CONFIG_PATH}" >> /etc/profile'
 sudo sh -c 'echo "export ACLOCAL_PATH=/usr/local/share/aclocal:${ACLOCAL_PATH}" >> /etc/profile'
 source /etc/profile
+cd ..
 
-cd 
+
+# Choose of the one of following for nodejs and cmake
+echo "Installing Nodejs"
+curl --silent --location https://rpm.nodesource.com/setup_16.x | sudo bash -
+sudo yum install -y nodejs
+
+echo "Get expected CMake"
+export cmake_version=3.23.2
+export cmake_name=cmake-${cmake_version}-Linux-x86_64
+wget https://github.com/Kitware/CMake/releases/download/v${cmake_version}/${cmake_name}.tar.gz
+tar -zxf ${cmake_name}.tar.gz
+rm -rf ${cmake_name}.tar.gz
+cmake_name=$(echo $cmake_name | tr '[:upper:]' '[:lower:]')
+sudo cp -r ${cmake_name}/* /usr/local/
+rm -rf ${cmake_name}
+
+#. <(curl https://aka.ms/vcpkg-init.sh -L)
+#. ~/.vcpkg/vcpkg-init fetch cmake
+#sudo ln -s `. ~/.vcpkg/vcpkg-init fetch cmake | tail -n 1` /usr/local/bin/
+#sudo ln -s `. ~/.vcpkg/vcpkg-init fetch node | tail -n 1` /usr/local/bin/
+#sudo ln -s `. ~/.vcpkg/vcpkg-init fetch node | tail -n 1 | sed -e 's!bin/node!bin/npm!g'` /usr/local/bin/
+
+echo "Check cmake node and npm"
+which cmake
+which node
+which npm
 
 # Libs
 sudo yum install -y \
@@ -70,35 +96,28 @@ sudo yum install -y \
         libevent-devel         \
 	libmemcached-devel \
 	heimdal-devel \
-	java-1.8.0-openjdk-devel \
         numactl-devel \
+	sqlite-devel  \
+	libicu-devel  \
+	uuid-devel \
+	libuuid-devel \
 	ncurses-devel
 
+
+# Doesn't work
+#sudo yum install -y v8-devel
+
 #echo "Install JDK 11"
-# This only install JRE. Install java-11-amazon-corretto instead
-#sudo amazon-linux-extras install java-openjdk11
-# JDK HOME /usr/lib/jvm/java-11-amazon-corretto.x86_64
-#sudo yum install -y java-11-amazon-corretto
+JDK11=amazon-corretto-11-x64-al2-jdk.rpm
+wget https://corretto.aws/downloads/latest/${JDK11}
+sudo yum install -y ${JDK11}
+rm -rf ${JDK11}
 which java
 java -version
 which jar
 
-#echo "Installing Python3"
-#wget https://www.python.org/ftp/python/3.9.13/Python-3.9.13.tgz
-#tar -zxvf Python-3.9.13.tgz
-#cd Python-3.9.13
-#./configure --enable-optimizations --enable-shared
-#sudo make altinstall
-#cd ..
-#sudo rm -rf Python*
-#sudo ln -s /usr/local/bin/python3.9 /usr/local/bin/python3
-#[ -e /usr/bin/python3 ] && sudo rm -rf /usr/bin/python3
-#sudo ln -s /usr/local/bin/python3 /usr/bin/python3
-#sudo sh -c 'echo "export LD_LIBRARY_PATH=/usr/local/lib:\${LD_LIBRARY_PATH}" >> /etc/profile'
-#ls -l /usr/local/lib/libpython3.9.so.1.0
-#source /etc/profile
 
-echo "Python3 version"
+echo "Python3 devel"
 sudo yum install -y python3-devel
 which python3
 python3 --version
@@ -110,9 +129,6 @@ wget http://mysql.mirrors.hoobly.com/Downloads/MySQL-5.6/MySQL-devel-5.6.44-1.el
 sudo yum install -y MySQL-devel-5.6.44-1.el7.x86_64.rpm
 rm -rf MySQL-devel-5.6.44-1.el7.x86_64.rpm 
 
-echo "Installing Nodejs"
-curl --silent --location https://rpm.nodesource.com/setup_16.x | sudo bash -
-sudo yum install -y nodejs
 
 echo "Installing R"
 sudo yum install -y R-core-devel
@@ -126,18 +142,6 @@ wget https://cran.r-project.org/src/contrib/Archive/RInside/${RInside_package}
 sudo R CMD INSTALL ${RInside_package}
 rm -rf ${RInside_package}
 
-#sudo yum install -y cmake3
-#sudo ln -s /usr/bin/cmake3 /usr/bin/cmake
-echo "Get expected CMake"
-export cmake_version=3.23.2
-export cmake_name=cmake-${cmake_version}-Linux-x86_64
-wget https://github.com/Kitware/CMake/releases/download/v${cmake_version}/${cmake_name}.tar.gz
-tar -zxf ${cmake_name}.tar.gz
-rm -rf ${cmake_name}.tar.gz
-
-cmake_name=$(echo $cmake_name | tr '[:upper:]' '[:lower:]')
-sudo cp -r ${cmake_name}/* /usr/local/
-rm -rf ${cmake_name}
 
 # Setup Jenkins
 sudo mkdir -p /var/lib/jenkins/workspace
@@ -153,6 +157,10 @@ echo "Import gpg key"
 aws s3 cp s3://@S3_BUCKET@/HPCCSystems.priv .
 gpg --passphrase @GPG_PASSPHRASE@  --import HPCCSystems.priv
 rm -rf HPCCSystems.priv
+
+# Set Enviornment Variables for build
+export ACLOCAL_PATH=/usr/local/share/aclocal:$ACLOCAL_PATH
+export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
 
 # VCPKG
 WORKDIR=$(pwd)/hpcc-dev
@@ -190,6 +198,9 @@ ${WORKDIR}/vcpkg/vcpkg install \
   --x-buildtrees-root=${WORKDIR}/build/vcpkg_buildtrees \
   --x-packages-root=${WORKDIR}/build/vcpkg_packages
 
+#echo "Show ${WORKDIR}/build/vcpkg_buildtrees/libxslt/autoconf-x64-linux-err.log"
+#cat ${WORKDIR}/build/vcpkg_buildtrees/libxslt/autoconf-x64-linux-err.log
+
 #echo "Check icu error log"
 #echo "cat /home/ec2-user/hpcc-dev/build/vcpkg_buildtrees/icu/autoconf-x64-linux-err.log"
 #cat /home/ec2-user/hpcc-dev/build/vcpkg_buildtrees/icu/autoconf-x64-linux-err.log
@@ -198,3 +209,18 @@ mono `${WORKDIR}/vcpkg/vcpkg fetch nuget | tail -n 1` \
     sources remove \
     -name "GitHub"
 
+
+# reinstall newer libtool
+# vcpkg build XLST can't find this libtool
+echo "uninstall libtool"
+sudo rpm -e libtool-2.4.2-22.2.amzn2.0.2.x86_64
+sudo rpm -qa | grep libtool || true
+
+wget http://ftp.jaist.ac.jp/pub/GNU/libtool/libtool-2.4.6.tar.gz
+tar xvfz libtool-2.4.6.tar.gz
+cd libtool-2.4.6
+ ./configure --prefix=/usr/local/libtool/2_4_6
+make
+sudo make install
+cd ..
+rm -rf libtool-2.4.6*

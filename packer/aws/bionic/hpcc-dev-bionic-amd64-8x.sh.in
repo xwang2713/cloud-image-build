@@ -58,6 +58,7 @@ sudo apt install -y libncurses-dev \
                 r-cran-rinside \
                 r-cran-inline \
 		libbsd-dev       \
+		libuv1-dev  \
 		uuid-dev
 
 dpkg -l | grep bsd
@@ -73,6 +74,15 @@ curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
 sudo apt-get install -y nodejs
 echo "Check npm ..."
 which npm
+
+wget https://curl.se/download/curl-7.81.0.tar.gz
+tar -zxvf curl-7.81.0.tar.gz
+cd curl-7.81.0
+./configure --with-gnutls --with-ssl
+make -j4
+sudo make install
+cd ..
+rm -rf curl-7.81.0*
 
 # Setup Jenkins
 sudo mkdir -p /var/lib/jenkins/workspace

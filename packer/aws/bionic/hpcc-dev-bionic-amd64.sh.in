@@ -22,6 +22,7 @@ sleep 10
 
 sudo apt-get install -y unzip
 
+
 echo "Installing HPCC build prerequisites"
 
 sudo apt-get install -y \
@@ -48,7 +49,7 @@ sudo apt-get install -y \
                  libboost-regex-dev    \
                  libarchive-dev        \
                  libv8-dev             \
-                 openjdk-8-jdk         \
+                 openjdk-11-jdk         \
                  libapr1-dev           \
                  libaprutil1-dev       \
                  libiberty-dev         \
@@ -73,17 +74,28 @@ sudo apt-get install -y \
                  xsltproc              \
                  libsaxonb-java        \
                  libatlas-base-dev     \
-                 libbsd-dev     \
+		 libuv1-dev            \
+                 libbsd-dev            \
                 --fix-missing         
 
+
 #libssl-dev            \
-sudo dpkg-reconfigure libc6 && \
-export DEBIAN_FRONTEND=noninteractive && \
-sudo -E apt-get -q --option "Dpkg::Options::=--force-confold" --assume-yes install libssl-dev
+#sudo dpkg-reconfigure libc6 && \
+#export DEBIAN_FRONTEND=noninteractive && \
+#sudo -E apt-get -q --option "Dpkg::Options::=--force-confold" --assume-yes install libssl-dev
+sudo apt-get install -y install libssl-dev
 
+# curl
+wget https://curl.se/download/curl-7.81.0.tar.gz
+tar -zxvf curl-7.81.0.tar.gz
+cd curl-7.81.0
+./configure --with-gnutls --with-ssl
+make -j4
+sudo make install
+cd ..
+rm -rf curl-7.81.0*
 
-sudo apt-get install -y python2.7-dev --fix-missing
-sudo apt-get install -y python3-dev --fix-missing
+#sudo apt-get install -y python2.7-dev --fix-missing
 sudo apt-get install -y libgtk2.0-dev --fix-missing
 sudo apt-get install -y libcurl4-gnutls-dev --fix-missing
 sudo apt-get install -y bison --fix-missing
@@ -101,8 +113,8 @@ sudo R CMD INSTALL ${RInside_package}
 rm -rf ${RInside_package}
 
 echo "Get expected CMake"
-export cmake_version=3.22.1
-export cmake_name=cmake-${cmake_version}-Linux-x86_64
+export cmake_version=3.24.2
+export cmake_name=cmake-${cmake_version}-linux-x86_64
 wget https://github.com/Kitware/CMake/releases/download/v${cmake_version}/${cmake_name}.tar.gz
 tar -zxf ${cmake_name}.tar.gz
 rm -rf ${cmake_name}.tar.gz
@@ -116,16 +128,21 @@ which cmake
 cmake --version
 rm -rf ${cmake_name}
 
+
 # Setup Jenkins
 sudo mkdir -p /var/lib/jenkins/workspace
 sudo chown -R ubuntu:ubuntu /var/lib/jenkins
 sudo ln -s /var/lib/jenkins /jenkins
 
 echo "Install AWS Cli"
-curl -O https://bootstrap.pypa.io/get-pip.py
-sudo python3 get-pip.py
-sudo pip3 install awscli --upgrade
-rm -rf get-pip.py
+sudo apt-get install -y python3-dev --fix-missing
+#curl -O https://bootstrap.pypa.io/get-pip.py
+#sudo python3 get-pip.py
+#sudo pip3 install awscli --upgrade
+#rm -rf get-pip.py
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
 
 echo "Import gpg key"
 aws s3 cp s3://@S3_BUCKET@/HPCCSystems.priv .

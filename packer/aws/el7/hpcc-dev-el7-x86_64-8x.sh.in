@@ -55,7 +55,30 @@ sudo sh -c 'echo "export LD_LIBRARY_PATH=/usr/local/lib:${LD_LIBRARY_PATH}" >> /
 sudo sh -c 'echo "export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:${PKG_CONFIG_PATH}" >> /etc/profile'
 sudo sh -c 'echo "export ACLOCAL_PATH=/usr/local/share/aclocal:${ACLOCAL_PATH}" >> /etc/profile'
 source /etc/profile
-cd 
+cd ..
+
+# Install cmake and nodejs can be one of two options: either directly install or using vcpkg
+#sudo yum install -y cmake3
+#sudo ln -s /usr/bin/cmake3 /usr/bin/cmake
+echo "Get expected CMake"
+export cmake_version=3.23.2
+export cmake_name=cmake-${cmake_version}-Linux-x86_64
+wget https://github.com/Kitware/CMake/releases/download/v${cmake_version}/${cmake_name}.tar.gz
+tar -zxf ${cmake_name}.tar.gz
+rm -rf ${cmake_name}.tar.gz
+cmake_name=$(echo $cmake_name | tr '[:upper:]' '[:lower:]')
+sudo cp -r ${cmake_name}/* /usr/local/
+rm -rf ${cmake_name}
+
+echo "Installing Nodejs"
+curl --silent --location https://rpm.nodesource.com/setup_16.x | sudo bash -
+sudo yum install -y nodejs
+
+#. <(curl https://aka.ms/vcpkg-init.sh -L)
+#. ~/.vcpkg/vcpkg-init fetch cmake
+#sudo ln -s `. ~/.vcpkg/vcpkg-init fetch cmake | tail -n 1` /usr/local/bin/
+#sudo ln -s `. ~/.vcpkg/vcpkg-init fetch node | tail -n 1` /usr/local/bin/
+#sudo ln -s `. ~/.vcpkg/vcpkg-init fetch node | tail -n 1 | sed -e 's!bin/node!bin/npm!g'` /usr/local/bin/
 
 # Libs
 sudo yum install -y \
@@ -65,7 +88,7 @@ sudo yum install -y \
 	libevent-devel           \
 	sqlite-devel             \
 	python3-devel            \
-	java-1.8.0-openjdk-devel \
+	java-11-openjdk-devel \
 	libmemcached-devel       \
 	heimdal-devel            \
         numactl-devel            \
@@ -104,9 +127,6 @@ wget http://mysql.mirrors.hoobly.com/Downloads/MySQL-5.6/MySQL-devel-5.6.44-1.el
 sudo yum install -y MySQL-devel-5.6.44-1.el7.x86_64.rpm
 rm -rf MySQL-devel-5.6.44-1.el7.x86_64.rpm 
 
-echo "Installing Nodejs"
-curl --silent --location https://rpm.nodesource.com/setup_16.x | sudo bash -
-sudo yum install -y nodejs
 
 echo "Installing R"
 sudo yum install -y R-core-devel
@@ -120,25 +140,14 @@ wget https://cran.r-project.org/src/contrib/Archive/RInside/${RInside_package}
 sudo R CMD INSTALL ${RInside_package}
 rm -rf ${RInside_package}
 
-# Install libbsd-devel
+# Install libbsd-devel 
+#sudo yum install -y libbsd-devel   #This probably will work
 wget https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/l/libbsd-devel-0.8.3-1.el7.x86_64.rpm
 wget https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/l/libbsd-0.8.3-1.el7.x86_64.rpm
 rpm -i libbsd-0.8.3-1.el7.x86_64.rpm libbsd-devel-0.8.3-1.el7.x86_64.rpm
 rm -rf libbsd-devel-0.8.3-1.el7.x86_64.rpm
 rm -rf libbsd-0.8.3-1.el7.x86_64.rpm
 
-#sudo yum install -y cmake3
-#sudo ln -s /usr/bin/cmake3 /usr/bin/cmake
-echo "Get expected CMake"
-export cmake_version=3.23.2
-export cmake_name=cmake-${cmake_version}-Linux-x86_64
-wget https://github.com/Kitware/CMake/releases/download/v${cmake_version}/${cmake_name}.tar.gz
-tar -zxf ${cmake_name}.tar.gz
-rm -rf ${cmake_name}.tar.gz
-
-cmake_name=$(echo $cmake_name | tr '[:upper:]' '[:lower:]')
-sudo cp -r ${cmake_name}/* /usr/local/
-rm -rf ${cmake_name}
 
 # Setup Jenkins
 sudo mkdir -p /var/lib/jenkins/workspace
