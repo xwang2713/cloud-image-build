@@ -62,7 +62,7 @@ sudo apt install -y libncurses-dev     \
          uuid-dev                      \
          --fix-missing
 
-sudo apt install -y  bcurl4-openssl-dev \
+sudo apt install -y  libcurl4-openssl-dev \
                 libevent-dev            \
                 fop                     \
                 xsltproc                \
