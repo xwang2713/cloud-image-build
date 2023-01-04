@@ -4,5 +4,6 @@
 
 # !!!! These are wrong AMIs. The are for bionic.  Need update
 ca-central-1 ami-08a6203f59f9df866 Canada
+us-east-1 ami-0c1704bac156af62c
 
 #ami-0415d78dfbf98bc5e

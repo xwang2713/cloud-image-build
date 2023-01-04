@@ -1,3 +1,4 @@
 # https://cloud-images.ubuntu.com/locator/ec2/
 #               ami-0febea13e0218b5e6 Tokyo
 ca-central-1 ami-08a6203f59f9df866 Canada                                                                                                                                                                                                       #ami-0415d78dfbf98bc5e
+us-east-1 ami-0c1704bac156af62c

@@ -2,6 +2,7 @@
 #Select region and subscribe. It is free to our build image t2.micro
 #ca-central-1 ami-00fe7f6351d0b4853 Canada
 us-east-2 ami-045b0a05944af45c1 US
+us-east-1 ami-0c07df890a618c98a
 ca-central-1 ami-0c43193f9aa2a22db Canada
 
 #ap-northeast-2

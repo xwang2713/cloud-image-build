@@ -24,6 +24,17 @@ usage()
 
 configure_file()
 {
+	
+ echo "sed \"s|@HPCC_VERSION@|${hpcc_version}|g; \
+      s|@CODENAME@|${codename}|g; \
+      s|@ARCH@|${arch}|g; \
+      s|@BUILD_TYPE@|${type}|g; \
+      s|@SUBNET_ID@|${subnet_id}|g; \
+      s|@USER@|${os_user}|g; \
+      s|@PACKAGE@|${package_type}|g; \
+      s|@BASE_AMI@|${base_ami}|g; \
+      s|@AWS_REGION@|${region}|g\"   < ${build_script_in} > ${build_script} "
+
 
  sed "s|@HPCC_VERSION@|${hpcc_version}|g; \
       s|@CODENAME@|${codename}|g; \
@@ -43,8 +54,8 @@ run_packer_build()
   log=ami-${region}-log-${now}.log
   num_of_build=$(expr $num_of_build \+ 1)
   build_script=ami-build-json-${region}
-  base_ami=$(cat ${wk_dir}/${codename}/base-ami | grep ${region} | cut -d' ' -f2)
-  subnet_id=$(cat ${wk_dir}/${subnet_file} | grep ${region} | cut -d' ' -f2)
+  base_ami=$(cat ${wk_dir}/${codename}/base-ami | grep -v "^[[:space:]]*#" | grep ${region} | cut -d' ' -f2)
+  subnet_id=$(cat ${wk_dir}/${subnet_file} | grep -v "^[[:space:]]*#" | grep ${region} | cut -d' ' -f2)
   
   configure_file
 

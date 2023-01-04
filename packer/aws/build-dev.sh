@@ -64,7 +64,7 @@ run_packer_build()
   num_of_build=$(expr $num_of_build \+ 1)
   build_script=ami-build-json-${region}
   base_ami=$(cat ${wk_dir}/${codename}/base-${type}-ami | grep -v "^#" |  grep ${region} | cut -d' ' -f2)
-  subnet_id=$(cat ${wk_dir}/${subnet_file} | grep ${region} | cut -d' ' -f2)
+  subnet_id=$(cat ${wk_dir}/${subnet_file} | grep -v "^#" | grep ${region} | cut -d' ' -f2)
   
   configure_file
 

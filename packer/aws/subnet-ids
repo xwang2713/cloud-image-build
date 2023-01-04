@@ -1,4 +1,6 @@
 # Selected subnet id which has at lest one VPC
+eu-west-1 subnet-0e1f72734ee8e2f4e
+#eu-west-1 subnet-c85997be
 
 us-east-1 subnet-eaacfdb6
 us-east-2 
@@ -11,7 +13,6 @@ ap-southeast-1 subnet-0f108ce646bdc3c44
 ap-southeast-2 subnet-042ad201b4168e837
 ca-central-1 
 eu-central-1 
-eu-west-1 subnet-0e1f72734ee8e2f4e
 eu-west-2 
 eu-west-3 
 sa-east-1 subnet-0e0a8b3147005886e

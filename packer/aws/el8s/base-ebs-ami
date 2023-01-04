@@ -3,6 +3,7 @@
 #Flowwing is not from Centos.org and shouldn't be used
 #ca-central-1 ami-0d7499af0874fa5c0 Canada
 us-east-2 ami-045b0a05944af45c1 US
+us-east-1 ami-0c07df890a618c98a
 
 #ap-northeast-2
 #ap-south-1
