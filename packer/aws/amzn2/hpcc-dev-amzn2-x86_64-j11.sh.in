@@ -1,0 +1,152 @@
+#!/bin/bash
+
+export codename=amzn2
+export arch=x86_64
+export pkgType=rpm
+export now=$(date -u +%Y%m%d-%H%M)
+
+echo "wait 180"
+sleep 180
+echo "done waiting"
+
+sudo yum update
+sudo amazon-linux-extras install -y epel
+sleep 10
+
+sudo yum install -y git zip unzip wget python3 libtool autoconf automake
+
+echo "Installing HPCC build prerequisites"
+
+sudo yum install -y \
+                 wget                  \
+                 rpm-build             \
+                 gcc                   \
+                 gcc-c++               \
+                 libcurl-devel         \
+                 freetype-devel        \
+                 zip                   \
+                 git                   \
+                 make                  
+
+sudo yum install -y \
+                 bison                 \
+                 flex                  \
+                 binutils-devel        \
+                 openldap-devel        \
+                 cppunit-devel         \
+                 libicu-devel          \
+                 libxslt-devel        
+
+sudo yum install -y \
+                 boost-devel           \
+                 openssl-devel         \
+                 libarchive-devel      \
+                 apr-devel             \
+                 apr-util-devel        \
+                 hiredis-devel         \
+                 tbb-devel             \
+                 numactl-devel         \
+                 libevent-devel        \
+                 sqlite-devel          \
+                 libmemcached-devel    \
+                 memcached-devel       
+
+
+sudo yum install -y \
+                 libtool               \
+                 automake              \
+                 make                  \
+                 m4                    \
+                 gtk2-devel            \
+                 atlas-devel           
+
+sudo yum install -y \
+                 python-devel          \
+                 gnutls                \
+                 libbsd-devel          \
+		 libuuid-devel         \
+		 ncurses-devel         \
+                 libmemcached-devel    \
+                 numactl-devel         \
+                 heimdal-devel         \
+		 libuv-devel           \
+                 perl-ExtUtils-MakeMaker
+
+# Replace libuv-devel 1.49 with Following to install v8-devel but which is not compatible with nodejs
+#wget https://rpmfind.net/linux/epel/7Server/x86_64/Packages/l/libuv-1.44.2-1.el7.x86_64.rpm
+#wget https://rpmfind.net/linux/epel/7Server/x86_64/Packages/l/libuv-devel-1.44.2-1.el7.x86_64.rpm
+#sudo rpm -i libuv-1.44.2-1.el7.x86_64.rpm libuv-devel-1.44.2-1.el7.x86_64.rpm
+#echo "Install v8-devel"
+#sudo yum install -y v8-devel
+
+JDK11=amazon-corretto-11-x64-al2-jdk.rpm
+wget https://corretto.aws/downloads/latest/${JDK11}
+sudo yum install -y ${JDK11}
+rm -rf ${JDK11}
+
+
+echo "Install Python3 devel"
+sudo yum install -y python3-devel
+
+#echo "Installing pip3"
+#pip3 is probably already installed:
+#sudo /opt/rh/rh-python36/root/usr/bin/pip3
+#sudo yum install -y python3-pip
+
+
+wget http://mysql.mirrors.hoobly.com/Downloads/MySQL-5.6/MySQL-devel-5.6.44-1.el7.x86_64.rpm
+sudo yum install -y MySQL-devel-5.6.44-1.el7.x86_64.rpm
+rm -rf MySQL-devel-5.6.44-1.el7.x86_64.rpm 
+
+
+echo "Installing Nodejs"
+curl --silent --location https://rpm.nodesource.com/setup_16.x | sudo bash -
+sudo yum install -y nodejs
+#nodejs-devel
+echo "node and npm"
+which node
+node --version
+which npm
+npm --version
+
+
+echo "Installing R"
+sudo yum install -y R-core-devel
+export Rcpp_package=Rcpp_0.12.19.tar.gz
+wget https://cran.r-project.org/src/contrib/Archive/Rcpp/${Rcpp_package}
+sudo R CMD INSTALL ${Rcpp_package}
+rm -rf ${Rcpp_package}
+
+export RInside_package=RInside_0.2.12.tar.gz
+wget https://cran.r-project.org/src/contrib/Archive/RInside/${RInside_package}
+sudo R CMD INSTALL ${RInside_package}
+rm -rf ${RInside_package}
+
+#sudo yum install -y cmake3
+#sudo ln -s /usr/bin/cmake3 /usr/bin/cmake
+echo "Get expected CMake"
+export cmake_version=3.22.1
+export cmake_name=cmake-${cmake_version}-Linux-x86_64
+wget https://github.com/Kitware/CMake/releases/download/v${cmake_version}/${cmake_name}.tar.gz
+tar -zxf ${cmake_name}.tar.gz
+rm -rf ${cmake_name}.tar.gz
+
+cmake_name=$(echo $cmake_name | tr '[:upper:]' '[:lower:]')
+sudo cp -r ${cmake_name}/* /usr/local/
+rm -rf ${cmake_name}
+
+# Setup Jenkins
+sudo mkdir -p /var/lib/jenkins/workspace
+sudo chown -R ec2-user:ec2-user /var/lib/jenkins
+sudo ln -s /var/lib/jenkins /jenkins
+
+echo "Install AWS Cli"
+#sudo /opt/rh/rh-python36/root/usr/bin/pip3 install awscli --upgrade
+#sudo pip3 install awscli --upgrade
+sudo pip3 install awscli --upgrade
+
+
+echo "Import gpg key"
+aws s3 cp s3://@S3_BUCKET@/HPCCSystems.priv .
+gpg --passphrase @GPG_PASSPHRASE@  --import HPCCSystems.priv
+rm -rf HPCCSystems.priv

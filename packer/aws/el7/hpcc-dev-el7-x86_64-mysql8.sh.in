@@ -1,0 +1,246 @@
+#!/bin/bash
+
+export codename=el7
+export arch=amd64
+export pkgType=rpm
+export now=$(date -u +%Y%m%d-%H%M)
+
+echo "wait 180"
+sleep 180
+echo "done waiting"
+
+sudo yum update
+
+sleep 10
+
+sudo yum install -y ca-certificates unzip
+
+echo "Installing HPCC build prerequisites"
+
+sudo yum install -y \
+                 epel-release          \
+                 wget                  \
+                 rpm-build             \
+                 gcc                   \
+                 gcc-c++               \
+                 curl-devel            \
+                 freetype-devel        \
+                 zip                   \
+                 make                  
+
+sudo yum install -y \
+                 bison                 \
+                 flex                  \
+                 binutils-devel        \
+                 openldap-devel        \
+                 cppunit-devel         \
+                 libicu-devel          \
+                 libxslt-devel        
+
+sudo yum install -y \
+                 boost-devel           \
+                 openssl-devel         \
+                 libarchive-devel      \
+                 java-11-openjdk-devel \
+                 apr-devel             \
+                 apr-util-devel        \
+                 hiredis-devel         \
+                 tbb-devel             \
+                 numactl-devel         \
+                 libevent-devel        \
+                 sqlite-devel          \
+                 libmemcached-devel    \
+                 memcached-devel       
+# v8 install conflicts with nodejs/npm. Also v8embeded build fails with recent version 9+. The known working version is 3.x
+# v8-devel              \
+
+sudo yum install -y \
+                 libtool               \
+                 automake              \
+                 make                  \
+                 m4                    \
+                 gtk2-devel             \
+                 atlas-devel           
+
+sudo yum install -y \
+                 python-devel          \
+                 gnutls                \
+                 libbsd-devel          \
+                 perl-ExtUtils-MakeMaker \
+                 libcouchbase-devel
+
+sudo yum install -y git zip unzip wget python3-devel libtool autoconf automake
+sudo yum install -y \
+    heimdal-devel \
+    libuv-devel \
+   ncurses-devel
+
+# curl
+wget https://curl.se/download/curl-7.81.0.tar.gz
+tar -zxvf curl-7.81.0.tar.gz
+cd curl-7.81.0
+./configure --with-gnutls --with-ssl
+make -j4
+sudo make install
+rm -rf curl-7.81.0*
+sudo rpm -e libcurl-devel
+cd ..
+
+
+echo "Install devtoolset-11"
+sudo yum install -y centos-release-scl
+sudo yum install -y devtoolset-11
+#yum install devtoolset-11-gcc devtoolset-11-gcc-c++ devtoolset-11-binutils
+source /opt/rh/devtoolset-11/enable
+echo "check g++"
+which g++
+
+echo "Installing git"
+wget --no-check-certificate https://mirrors.edge.kernel.org/pub/software/scm/git/git-2.9.5.tar.gz
+ls -l ./git-2.9.5.tar.gz
+tar -zxvf git-2.9.5.tar.gz
+cd git-2.9.5
+./configure
+make -j4
+sudo make install
+cd ..
+rm -rf git-2.9.5 git-2.9.5.tar.gz
+
+echo "Get expected CMake"
+export cmake_version=3.22.1
+export cmake_name=cmake-${cmake_version}-Linux-x86_64
+wget https://github.com/Kitware/CMake/releases/download/v${cmake_version}/${cmake_name}.tar.gz
+tar -zxf ${cmake_name}.tar.gz
+rm -rf ${cmake_name}.tar.gz
+#cd ${cmake_name}
+#./bootstrap
+#make && sudo make install
+#cd ..
+cmake_name=$(echo $cmake_name | tr '[:upper:]' '[:lower:]')
+sudo cp -r ${cmake_name}/* /usr/local/
+sudo rm -rf ${cmake_name}
+
+echo "Install openssl 1.1.1"
+OPENSSL_PACKAGE=openssl-1.1.1s
+wget https://www.openssl.org/source/${OPENSSL_PACKAGE}.tar.gz
+tar -zxvf ${OPENSSL_PACKAGE}.tar.gz
+cd ${OPENSSL_PACKAGE}
+./config
+make -j4
+echo "install openssl"
+sudo make install
+cd ..
+rm -rf ${OPENSSL_PACKAGE}*
+ls -l /usr/bin/openssl
+
+
+echo "Build MySQL 8"
+sudo yum install -y patchelf
+pwd
+MYSQL_VERSION=8.0.31
+MYSQL_PACKAGE=mysql-boost-8.0.31
+wget https://dev.mysql.com/get/Downloads/MySQL-8.0/mysql-boost-${MYSQL_VERSION}.tar.gz
+tar -zxvf mysql-boost-${MYSQL_VERSION}.tar.gz
+mkdir ${MYSQL_VERSION}-build
+pwd
+ls 
+cd ${MYSQL_VERSION}-build
+echo "cmake configure mysql"
+cmake ../mysql-${MYSQL_VERSION} -DWITH_BOOST=../mysql-${MYSQL_VERSION}/boost -DWITH_SSL=/usr/local
+echo "compile mysql"
+make 
+echo "install mysql"
+sudo make install
+cd ..
+rm -rf mysql*
+ls -l /usr/local/mysql
+
+
+
+#echo "Installing Python3"
+#sudo yum install -y rh-python36
+#sudo yum install -y rh-python36-python-devel
+#source /opt/rh/rh-python36/enable
+##scl enable rh-python36 bash
+
+#wget https://www.python.org/ftp/python/3.6.10/Python-3.6.10.tgz
+#ls -l ./Python-3.6.10.tgz
+#$tar -zxvf Python-3.6.10.tgz
+#cd Python-3.6.10
+#sudo ./configure --enable-optimizations --enable-shared
+#sudo make altinstall
+#cd ..
+#sudo rm -rf Python*
+#sudo ln -s /usr/local/bin/python3.6 /usr/local/bin/python3
+#sudo /usr/bin/python3 --version
+#sudo ln -s /usr/local/bin/python3 /usr/bin/python3
+#sudo sh -c 'echo "export LD_LIBRARY_PATH=/usr/local/lib:\${LD_LIBRARY_PATH}" >> /etc/profile'
+
+#echo "Installing pip3"
+#pip3 is probably already installed:
+#sudo /opt/rh/rh-python36/root/usr/bin/pip3
+#sudo yum install -y python3-pip
+
+
+#wget http://mysql.mirrors.hoobly.com/Downloads/MySQL-5.6/MySQL-devel-5.6.44-1.el7.x86_64.rpm
+#sudo yum install -y MySQL-devel-5.6.44-1.el7.x86_64.rpm
+#rm -rf MySQL-devel-5.6.44-1.el7.x86_64.rpm
+
+#echo "sudo rpm -i mariadb-libs-5.5.68-1.el7.x86_64"
+#sudo rpm -e postfix-2:2.10.1-9.el7.x86_64
+#sudo rpm -e mariadb-libs-5.5.68-1.el7.x86_64
+#MYSQL_DIR=MySQL-5.7
+#MYSQL_DEVEL=mysql-community-devel-5.7.30-1.el7.x86_64.rpm
+#MYSQL_COMM=mysql-community-common-5.7.30-1.el7.x86_64.rpm 
+#MYSQL_LIBS=mysql-community-libs-5.7.30-1.el7.x86_64.rpm
+#wget http://mysql.mirrors.hoobly.com/Downloads/${MYSQL_DIR}/${MYSQL_COMM}
+#wget http://mysql.mirrors.hoobly.com/Downloads/${MYSQL_DIR}/${MYSQL_LIBS}
+#wget http://mysql.mirrors.hoobly.com/Downloads/${MYSQL_DIR}/${MYSQL_DEVEL}
+#sudo rpm -i ${MYSQL_COMM} ${MYSQL_LIBS} ${MYSQL_DEVEL}
+#echo "check installed mysql packages"
+#sudo rpm -qa | grep -i mysql
+#sudo rm -rf ${MYSQL_COMM} ${MYSQL_LIBS} ${MYSQL_DEVEL}
+
+
+echo "Installing Nodejs"
+curl --silent --location https://rpm.nodesource.com/setup_16.x | sudo bash -
+sudo yum install -y nodejs
+
+echo "Installing R"
+sudo yum install -y R-core-devel
+export Rcpp_package=Rcpp_0.12.19.tar.gz
+wget https://cran.r-project.org/src/contrib/Archive/Rcpp/${Rcpp_package}
+ls -l ${Rcpp_package}
+sudo R CMD INSTALL ${Rcpp_package}
+sudo rm -rf ${Rcpp_package}
+
+export RInside_package=RInside_0.2.12.tar.gz
+wget https://cran.r-project.org/src/contrib/Archive/RInside/${RInside_package}
+sudo R CMD INSTALL ${RInside_package}
+sudo rm -rf ${RInside_package}
+
+
+# Setup Jenkins
+sudo mkdir -p /var/lib/jenkins/workspace
+sudo chown -R centos:centos /var/lib/jenkins
+sudo ln -s /var/lib/jenkins /jenkins
+
+echo "Install AWS Cli"
+#sudo python3 -m pip install awscli --upgrade
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+
+#echo "Install devtoolset-2"
+#sudo wget http://people.centos.org/tru/devtools-2/devtools-2.repo -O /etc/yum.repos.d/devtools-2.repo
+#sudo yum install -y devtoolset-2-gcc devtoolset-2-binutils
+#sudo yum install -y devtoolset-2-gcc-gfortran devtoolset-2-gcc-c++
+#sudo yum install -y devtoolset-2-libatomic-devel devtoolset-2-gdb devtoolset-2-git devtoolset-2-gitk
+#sudo yum install -y  devtoolset-2-valgrind devtoolset-2-elfutils devtoolset-2-strace devtoolset-2-git-gui
+
+
+echo "Import gpg key"
+aws s3 cp s3://@S3_BUCKET@/HPCCSystems.priv .
+ls -l ./HPCCSystems.priv
+gpg --passphrase @GPG_PASSPHRASE@  --import HPCCSystems.priv
+rm -rf HPCCSystems.priv

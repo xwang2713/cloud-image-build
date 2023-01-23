@@ -1,0 +1,34 @@
+{
+  "min_packer_version": "1.0.0",
+  "variables": {
+    "hpcc_version": "@HPCC_VERSION@",
+    "codename": "@CODENAME@",     
+    "arch": "@ARCH@",     
+    "aws_region": "@AWS_REGION@",
+    "ssh_keypair_name": "{{env `SSH_KEYPAIR_NAME`}}",
+    "ssh_private_key_file": "{{env `SSH_PRIVATE_KEY_FILE`}}"
+  },
+  "builders": [{
+    "type": "@BUILD_TYPE@",
+    "ami_virtualization_type" : "hvm",
+    "region": "{{user `aws_region`}}",
+    "source_ami": "@BASE_AMI@",
+    "instance_type": "t2.micro",
+    "profile" : "ris-hpccsystems-prod",
+    "ssh_username": "@USER@",
+    "subnet_id" : "@SUBNET_ID@",
+    "associate_public_ip_address": "true",
+    "ssh_keypair_name": "{{user `ssh_keypair_name`}}",
+    "ssh_private_key_file": "{{user `ssh_private_key_file`}}",
+    "ami_name": "hpcc-@PACKAGE@-{{user `hpcc_version`}}-{{user `codename`}}-{{user `arch`}}"
+  }],
+  "provisioners": [{
+        "type": "shell",
+        "environment_vars": [
+           "HPCC_FULL_VERSION={{user `hpcc_version`}}"
+        ],
+        "scripts": [
+          "./hpcc-@PACKAGE@-{{user `codename`}}.sh"
+        ]
+ }]
+}
